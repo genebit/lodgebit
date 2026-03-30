@@ -1,0 +1,65 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Calendar, ClipboardList, ScanText, DoorOpen, Building2, Share2, Activity } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const navItems = [
+  { label: "Calendar", href: "/admin/calendar", icon: Calendar },
+  { label: "Bookings", href: "/admin/bookings", icon: ClipboardList },
+  { label: "OCR Scan", href: "/admin/ocr", icon: ScanText },
+  { label: "Units", href: "/admin/units", icon: DoorOpen },
+  { label: "Residences", href: "/admin/residences", icon: Building2 },
+  { label: "Facebook", href: "/admin/facebook", icon: Share2 },
+  { label: "Logs", href: "/admin/logs", icon: Activity },
+];
+
+export default function AdminSidebar() {
+  const pathname = usePathname();
+
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <aside className="hidden md:flex w-56 flex-col bg-card border-r h-screen sticky top-0">
+        <div className="p-5 border-b">
+          <p className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Admin Console</p>
+        </div>
+        <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+          {navItems.map(({ label, href, icon: Icon }) => (
+            <Link
+              key={href}
+              href={href}
+              className={cn(
+                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                pathname.startsWith(href)
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
+              )}
+            >
+              <Icon className="h-4 w-4 shrink-0" />
+              {label}
+            </Link>
+          ))}
+        </nav>
+      </aside>
+
+      {/* Mobile bottom navigation */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t flex items-center justify-around py-2">
+        {navItems.map(({ label, href, icon: Icon }) => (
+          <Link
+            key={href}
+            href={href}
+            className={cn(
+              "flex flex-col items-center gap-0.5 px-2 py-1 text-xs rounded-md transition-colors",
+              pathname.startsWith(href) ? "text-primary" : "text-muted-foreground",
+            )}
+          >
+            <Icon className="h-5 w-5" />
+            <span className="hidden sm:block">{label}</span>
+          </Link>
+        ))}
+      </nav>
+    </>
+  );
+}
