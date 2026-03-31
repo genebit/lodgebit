@@ -27,7 +27,7 @@ export default async function ContactPage() {
 
       <div className="space-y-6">
         <div className="p-6 rounded-xl border bg-card space-y-4">
-          <h2 className="font-semibold text-lg">{residence?.name ?? "Bitara Residence"}</h2>
+          <h2 className="font-semibold text-lg">{residence?.name ?? "Lodgebit"}</h2>
 
           {residence?.address && (
             <div className="flex items-start gap-3 text-muted-foreground">

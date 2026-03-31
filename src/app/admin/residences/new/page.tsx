@@ -1,4 +1,7 @@
+import type { Metadata } from "next";
 import ResidenceForm from "@/components/admin/ResidenceForm";
+
+export const metadata: Metadata = { title: "New Residence" };
 
 export default function NewResidencePage() {
   return (

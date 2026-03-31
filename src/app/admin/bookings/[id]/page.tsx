@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+
+export const metadata: Metadata = { title: "Booking Details" };
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Pencil, ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
@@ -25,6 +28,8 @@ interface BookingDetail extends Booking {
   }[];
   booking_logs: unknown[];
 }
+
+type GuestIdWithUrl = BookingDetail["guest_ids"][number] & { publicUrl: string };
 
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800",
@@ -49,6 +54,11 @@ export default async function BookingDetailPage({
 
   const booking = data as BookingDetail | null;
   if (!booking) notFound();
+
+  const guestIdsWithUrls: GuestIdWithUrl[] = (booking.guest_ids ?? []).map((gid) => ({
+    ...gid,
+    publicUrl: supabase.storage.from("guest-ids").getPublicUrl(gid.image_url).data.publicUrl,
+  }));
 
   const unit = booking.units;
   const hasFacebook = !!(unit?.residences?.facebook_page_id);
@@ -138,7 +148,7 @@ export default async function BookingDetailPage({
         </CardContent>
       </Card>
 
-      <GuestIDUploader bookingId={id} existingIds={booking.guest_ids} />
+      <GuestIDUploader bookingId={id} existingIds={guestIdsWithUrls} />
 
       {hasFacebook && (
         <FacebookPostButton

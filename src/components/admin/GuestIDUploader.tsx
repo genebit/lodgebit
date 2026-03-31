@@ -4,13 +4,7 @@ import { useState, useRef } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Upload, IdCard } from "lucide-react";
 
@@ -21,6 +15,7 @@ interface GuestIDUploaderProps {
     image_url: string;
     id_type: string | null;
     guest_name: string | null;
+    publicUrl?: string;
   }[];
 }
 
@@ -95,12 +90,27 @@ export default function GuestIDUploader({ bookingId, existingIds }: GuestIDUploa
       </CardHeader>
       <CardContent className="space-y-4">
         {existingIds.length > 0 && (
-          <div className="space-y-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {existingIds.map((gid) => (
-              <div key={gid.id} className="flex items-center gap-2 text-sm text-muted-foreground">
-                <IdCard className="h-4 w-4" />
-                <span>{gid.id_type ?? "ID"}</span>
-                {gid.guest_name && <span>— {gid.guest_name}</span>}
+              <div key={gid.id} className="space-y-1">
+                {gid.publicUrl ? (
+                  <a href={gid.publicUrl} target="_blank" rel="noreferrer" className="block">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={gid.publicUrl}
+                      alt={gid.id_type ?? "ID"}
+                      className="w-full h-24 object-cover rounded-md border"
+                    />
+                  </a>
+                ) : (
+                  <div className="w-full h-24 rounded-md border flex items-center justify-center bg-muted">
+                    <IdCard className="h-6 w-6 text-muted-foreground" />
+                  </div>
+                )}
+                <p className="text-xs text-muted-foreground truncate">
+                  {gid.id_type ?? "ID"}
+                  {gid.guest_name ? ` — ${gid.guest_name}` : ""}
+                </p>
               </div>
             ))}
           </div>

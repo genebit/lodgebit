@@ -30,6 +30,7 @@ export async function GET(req: NextRequest) {
   let query = supabaseAdmin
     .from("bookings")
     .select("*, units(id, name, residence_id)")
+    .is("deleted_at", null)
     .order("check_in", { ascending: false });
 
   if (status) query = query.eq("status", status);
@@ -63,12 +64,13 @@ export async function POST(req: NextRequest) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-    await supabaseAdmin.from("booking_logs").insert({
+    const { error: logError } = await supabaseAdmin.from("booking_logs").insert({
       booking_id: booking.id,
       admin_id: session.user?.id ?? "",
       action: "created",
       changes: { after: booking },
     });
+    if (logError) console.error("booking_logs insert failed:", logError.message);
 
     return NextResponse.json(booking, { status: 201 });
   } catch (error) {

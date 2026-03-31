@@ -1,5 +1,6 @@
 import NextAuth, { type NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
 import { supabaseAdmin } from "./supabase/admin";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
@@ -12,6 +13,10 @@ const credentialsSchema = z.object({
 export const authConfig: NextAuthConfig = {
   secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
   providers: [
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
     Credentials({
       async authorize(credentials) {
         const parsed = credentialsSchema.safeParse(credentials);
@@ -38,10 +43,36 @@ export const authConfig: NextAuthConfig = {
     }),
   ],
   callbacks: {
-    jwt({ token, user }) {
+    async signIn({ account, profile }) {
+      // For Google sign-in, only allow emails that exist in the admins table
+      if (account?.provider === "google") {
+        const email = profile?.email;
+        if (!email) return false;
+        const { data: admin } = await supabaseAdmin
+          .from("admins")
+          .select("id")
+          .eq("email", email)
+          .single();
+        return !!admin;
+      }
+      return true;
+    },
+    async jwt({ token, user, account, profile }) {
       if (user) {
         token.id = user.id;
         token.role = (user as { role?: string }).role;
+      }
+      // For Google sign-in, fetch the admin record to get id and role
+      if (account?.provider === "google" && profile?.email) {
+        const { data: admin } = await supabaseAdmin
+          .from("admins")
+          .select("id, role")
+          .eq("email", profile.email)
+          .single();
+        if (admin) {
+          token.id = admin.id;
+          token.role = admin.role;
+        }
       }
       return token;
     },

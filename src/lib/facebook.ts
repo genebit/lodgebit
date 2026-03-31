@@ -6,7 +6,8 @@ interface FacebookPostResult {
 
 export async function postToFacebook(
   pageId: string,
-  message: string
+  message: string,
+  accessToken: string
 ): Promise<FacebookPostResult> {
   const url = `https://graph.facebook.com/v19.0/${pageId}/feed`;
   const response = await fetch(url, {
@@ -14,7 +15,7 @@ export async function postToFacebook(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       message,
-      access_token: process.env.META_PAGE_ACCESS_TOKEN,
+      access_token: accessToken,
     }),
   });
 

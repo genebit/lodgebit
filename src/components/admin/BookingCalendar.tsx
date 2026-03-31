@@ -1,7 +1,8 @@
 "use client";
 
-import { Calendar, dateFnsLocalizer, type Event, type ToolbarProps } from "react-big-calendar";
-import { format, parse, startOfWeek, getDay, addDays, startOfDay } from "date-fns";
+import { useState } from "react";
+import { Calendar, dateFnsLocalizer, type Event, type ToolbarProps, type NavigateAction } from "react-big-calendar";
+import { format, parse, startOfWeek, getDay, addDays, startOfDay, addMonths } from "date-fns";
 import { enUS } from "date-fns/locale";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useRouter } from "next/navigation";
@@ -52,6 +53,16 @@ function CustomToolbar({ label, onNavigate }: ToolbarProps) {
 
 export default function BookingCalendar({ bookings }: { bookings: BookingWithUnit[] }) {
   const router = useRouter();
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  function handleNavigate(action: NavigateAction) {
+    setCurrentDate((prev) => {
+      if (action === "PREV") return addMonths(prev, -1);
+      if (action === "NEXT") return addMonths(prev, 1);
+      if (action === "TODAY") return new Date();
+      return prev;
+    });
+  }
 
   const events: CalendarEvent[] = bookings.map((b) => ({
     bookingId: b.id,
@@ -92,7 +103,9 @@ export default function BookingCalendar({ bookings }: { bookings: BookingWithUni
         style={{ height: "100%" }}
         views={["month"]}
         defaultView="month"
-        components={{ toolbar: CustomToolbar }}
+        date={currentDate}
+        onNavigate={() => {}}
+        components={{ toolbar: (props) => <CustomToolbar {...props} onNavigate={handleNavigate} /> }}
         dayPropGetter={(date) => {
           const status = bookedDays.get(format(date, "yyyy-MM-dd"));
           if (!status) return {};

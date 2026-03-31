@@ -5,11 +5,14 @@ import { z } from "zod";
 
 const residenceSchema = z.object({
   name: z.string().min(1),
+  slug: z.string().regex(/^[a-z0-9-]+$/, "Slug must be lowercase letters, numbers and hyphens").optional().nullable(),
   description: z.string().optional().nullable(),
   address: z.string().optional().nullable(),
   latitude: z.number().optional().nullable(),
   longitude: z.number().optional().nullable(),
   facebook_page_id: z.string().optional().nullable(),
+  meta_page_access_token: z.string().optional().nullable(),
+  cover_image_url: z.string().url().optional().nullable(),
 });
 
 export async function GET(req: NextRequest) {

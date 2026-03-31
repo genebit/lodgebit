@@ -16,14 +16,8 @@ interface FacebookPostButtonProps {
   unitName: string;
 }
 
-export default function FacebookPostButton({
-  bookingId,
-  guestName,
-  checkIn,
-  checkOut,
-  unitName,
-}: FacebookPostButtonProps) {
-  const defaultMessage = `New booking confirmed!\n\nGuest: ${guestName}\nUnit: ${unitName}\nCheck-in: ${format(new Date(checkIn), "MMM d, yyyy")}\nCheck-out: ${format(new Date(checkOut), "MMM d, yyyy")}\n\nThank you for choosing Bitara Residence! 🏠`;
+export default function FacebookPostButton({ bookingId, checkIn, checkOut, unitName }: FacebookPostButtonProps) {
+  const defaultMessage = `New booking confirmed!\n\nUnit: ${unitName}\nCheck-in: ${format(new Date(checkIn), "MMM d, yyyy")}\nCheck-out: ${format(new Date(checkOut), "MMM d, yyyy")}\n\nThank you for choosing our residence! 🏠`;
 
   const [message, setMessage] = useState(defaultMessage);
   const [posting, setPosting] = useState(false);
@@ -59,11 +53,7 @@ export default function FacebookPostButton({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        <Textarea
-          rows={6}
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
+        <Textarea rows={6} value={message} onChange={(e) => setMessage(e.target.value)} />
         <Button onClick={handlePost} disabled={posting} size="sm">
           <Share2 className="h-4 w-4 mr-1" />
           {posting ? "Posting…" : "Post to Facebook"}

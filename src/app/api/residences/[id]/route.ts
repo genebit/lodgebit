@@ -5,11 +5,14 @@ import { z } from "zod";
 
 const updateSchema = z.object({
   name: z.string().min(1).optional(),
+  slug: z.string().regex(/^[a-z0-9-]+$/).optional().nullable(),
   description: z.string().optional().nullable(),
   address: z.string().optional().nullable(),
   latitude: z.number().optional().nullable(),
   longitude: z.number().optional().nullable(),
   facebook_page_id: z.string().optional().nullable(),
+  meta_page_access_token: z.string().optional().nullable(),
+  cover_image_url: z.string().url().optional().nullable(),
 });
 
 export async function GET(

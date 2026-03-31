@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import BookingForm from "@/components/admin/BookingForm";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+
+export const metadata: Metadata = { title: "Edit Booking" };
 import { ArrowLeft } from "lucide-react";
 import type { Booking, Unit } from "@/types";
 

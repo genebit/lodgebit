@@ -79,7 +79,6 @@ export default function OCRScanner({ bookingId, onExtracted }: OCRScannerProps) 
 
       {preview && (
         <div className="rounded-lg overflow-hidden border max-w-sm">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={preview} alt="Contract preview" className="w-full object-contain" />
         </div>
       )}

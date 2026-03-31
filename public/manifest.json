@@ -1,7 +1,7 @@
 {
-  "name": "Bitara Residence",
-  "short_name": "Bitara",
-  "description": "Transient Residence Booking Management",
+  "name": "Lodgebit",
+  "short_name": "Lodgebit",
+  "description": "Multi-Residence Booking Management Platform",
   "start_url": "/admin",
   "display": "standalone",
   "background_color": "#ffffff",

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
-const ALLOWED_BUCKETS = ["guest-ids", "contracts", "unit-images"];
+const ALLOWED_BUCKETS = ["guest-ids", "contracts", "unit-images", "residence-covers"];
 
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -25,7 +25,13 @@ export async function POST(req: NextRequest) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-    return NextResponse.json({ signedUrl: data.signedUrl, token: data.token });
+    const { data: urlData } = supabaseAdmin.storage.from(bucket).getPublicUrl(path);
+
+    return NextResponse.json({
+      signedUrl: data.signedUrl,
+      token: data.token,
+      publicUrl: urlData.publicUrl,
+    });
   } catch (error) {
     console.error("Signed URL error:", error);
     return NextResponse.json({ error: "Failed to generate signed URL" }, { status: 500 });
