@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const supabase = await createClient();
   const { data } = await supabase.from("residences").select("name").eq("slug", slug).maybeSingle();
-  return { title: data?.name ?? "Residence" };
+  return { title: (data as { name: string } | null)?.name ?? "Residence" };
 }
 
 const NAV_LINKS = [
