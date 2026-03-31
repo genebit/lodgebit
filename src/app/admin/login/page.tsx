@@ -9,7 +9,6 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Building2 } from "lucide-react";
 
 function Req() {
   return <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-500 mb-0.5 ml-1 align-middle" />;
@@ -76,12 +75,22 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
-      <div className="hidden lg:flex flex-col items-center justify-center bg-primary text-primary-foreground p-12 gap-8">
-        <div className="w-full max-w-sm aspect-square rounded-2xl border-2 border-dashed border-primary-foreground/30 flex flex-col items-center justify-center gap-3 text-primary-foreground/60">
-          <Building2 className="h-16 w-16" />
-          <p className="text-sm font-medium">Illustration — replace me</p>
+      <div className="hidden lg:flex flex-col items-center justify-center bg-primary text-primary-foreground p-12 gap-8 relative overflow-hidden">
+        {/* Animated background orbs */}
+        <div className="login-orb-1 absolute -top-24 -left-24 w-96 h-96 rounded-full bg-violet-500/20 blur-3xl pointer-events-none" />
+        <div className="login-orb-2 absolute -bottom-32 -right-16 w-80 h-80 rounded-full bg-indigo-400/20 blur-3xl pointer-events-none" />
+        <div className="login-orb-3 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-blue-500/10 blur-2xl pointer-events-none" />
+
+        <div className="w-full relative z-10">
+          <Image
+            src="/images/illustration/lodgebit-illustration.png"
+            alt="Lodgebit dashboard preview"
+            width={1080}
+            height={1080}
+            className="w-full h-auto rounded-2xl"
+          />
         </div>
-        <div className="text-center space-y-2 max-w-xs">
+        <div className="text-center space-y-2 max-w-xs relative z-10">
           <h1 className="text-2xl font-bold">Manage your properties with ease</h1>
           <p className="text-sm text-primary-foreground/70">
             Lodgebit — track bookings, scan contracts, and keep everything in one place.

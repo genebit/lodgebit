@@ -123,6 +123,25 @@ body {
   border-color: hsl(var(--border));
 }
 
+/* Login page background orb animations */
+@keyframes orb-drift-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(40px, -30px) scale(1.08); }
+  66%       { transform: translate(-25px, 20px) scale(0.95); }
+}
+@keyframes orb-drift-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40%       { transform: translate(-35px, 25px) scale(1.06); }
+  70%       { transform: translate(20px, -40px) scale(0.92); }
+}
+@keyframes orb-drift-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%       { transform: translate(30px, 35px) scale(1.1); }
+}
+.login-orb-1 { animation: orb-drift-1 14s ease-in-out infinite; }
+.login-orb-2 { animation: orb-drift-2 18s ease-in-out infinite; }
+.login-orb-3 { animation: orb-drift-3 22s ease-in-out infinite; }
+
 /* react-big-calendar border overrides */
 .rbc-calendar,
 .rbc-month-view,
