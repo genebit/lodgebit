@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import UnitForm from "@/components/admin/UnitForm";
 import UnitImageManager from "@/components/admin/UnitImageManager";
 import Link from "next/link";
+
+export const metadata: Metadata = { title: "Edit Unit" };
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft } from "lucide-react";

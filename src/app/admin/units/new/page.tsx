@@ -1,5 +1,8 @@
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import UnitForm from "@/components/admin/UnitForm";
+
+export const metadata: Metadata = { title: "New Unit" };
 
 export default async function NewUnitPage() {
   const supabase = await createClient();

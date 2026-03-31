@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import {
   Table,
@@ -7,6 +8,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+
+export const metadata: Metadata = { title: "Logs" };
 import Link from "next/link";
 import { format } from "date-fns";
 import type { BookingLog } from "@/types";

@@ -1,4 +1,7 @@
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
+
+export const metadata: Metadata = { title: "Facebook Posts" };
 import {
   Table,
   TableBody,

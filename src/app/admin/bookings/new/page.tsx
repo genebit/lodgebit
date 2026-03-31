@@ -1,5 +1,8 @@
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import BookingForm from "@/components/admin/BookingForm";
+
+export const metadata: Metadata = { title: "New Booking" };
 
 export default async function NewBookingPage() {
   const supabase = await createClient();

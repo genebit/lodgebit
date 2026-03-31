@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+
+export const metadata: Metadata = { title: "Booking Details" };
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Pencil, ArrowLeft } from "lucide-react";
 import { format } from "date-fns";

@@ -1,9 +1,12 @@
+import type { Metadata } from "next";
+import type { Residence } from "@/types";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Pencil, MapPin, Share2 } from "lucide-react";
-import type { Residence } from "@/types";
+import { Plus, Pencil, MapPin, Share2, ExternalLink } from "lucide-react";
+
+export const metadata: Metadata = { title: "Residences" };
 
 interface ResidenceRow extends Residence {
   units: { id: string; is_available: boolean }[];
@@ -64,6 +67,18 @@ export default async function ResidencesPage() {
                 <p className="text-muted-foreground">
                   {available} / {residence.units.length} units available
                 </p>
+                {residence.slug ? (
+                  <Link
+                    href={`/r/${residence.slug}`}
+                    target="_blank"
+                    className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                  >
+                    <ExternalLink className="h-3 w-3" />
+                    View public page
+                  </Link>
+                ) : (
+                  <p className="text-xs text-amber-500">No slug — public page not active</p>
+                )}
               </CardContent>
             </Card>
           );

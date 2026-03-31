@@ -1,6 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 import BookingCalendar from "@/components/admin/BookingCalendar";
 import type { BookingWithUnit } from "@/types";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Calendar" };
 
 export default async function CalendarPage() {
   const supabase = await createClient();
