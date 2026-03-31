@@ -11,10 +11,7 @@ interface ResidenceCoverUploadProps {
   currentCoverUrl: string | null;
 }
 
-export default function ResidenceCoverUpload({
-  residenceId,
-  currentCoverUrl,
-}: ResidenceCoverUploadProps) {
+export default function ResidenceCoverUpload({ residenceId, currentCoverUrl }: ResidenceCoverUploadProps) {
   const [coverUrl, setCoverUrl] = useState<string | null>(currentCoverUrl);
   const [imgError, setImgError] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -74,7 +71,6 @@ export default function ResidenceCoverUpload({
 
   return (
     <div className="space-y-4">
-      {/* Preview */}
       <div className="relative w-full aspect-video max-w-sm rounded-2xl overflow-hidden bg-muted border">
         {coverUrl && !imgError ? (
           <Image
@@ -93,25 +89,17 @@ export default function ResidenceCoverUpload({
         )}
       </div>
 
-      {/* Upload */}
       <div>
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/png,image/jpeg"
-          className="hidden"
-          onChange={handleUpload}
-        />
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => fileRef.current?.click()}
-          disabled={uploading}
-        >
+        <input ref={fileRef} type="file" accept="image/png,image/jpeg" className="hidden" onChange={handleUpload} />
+        <Button type="button" variant="outline" onClick={() => fileRef.current?.click()} disabled={uploading}>
           {uploading ? (
-            <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Uploading…</>
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Uploading…
+            </>
           ) : (
-            <><Upload className="h-4 w-4 mr-2" /> {coverUrl ? "Replace Cover" : "Upload Cover"}</>
+            <>
+              <Upload className="h-4 w-4 mr-2" /> {coverUrl ? "Replace Cover" : "Upload Cover"}
+            </>
           )}
         </Button>
         <p className="text-xs text-muted-foreground mt-1">

@@ -62,27 +62,6 @@ const NAV_LINKS = [
   { label: "Contact", href: "#contact" },
 ];
 
-const HIGHLIGHTS = [
-  {
-    icon: Shield,
-    title: "Safe & Secure",
-    sub: "CCTV Monitored",
-    desc: "24/7 surveillance cameras for your safety and peace of mind.",
-  },
-  {
-    icon: Sparkles,
-    title: "Fully Furnished",
-    sub: "Move-in Ready",
-    desc: "Everything you need is already here — just bring your bags.",
-  },
-  {
-    icon: Clock,
-    title: "Flexible Stays",
-    sub: "Short or Long-term",
-    desc: "Book for a night, a week, or longer — we accommodate all stays.",
-  },
-];
-
 export default async function ResidencePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const supabase = await createClient();
@@ -184,23 +163,7 @@ export default async function ResidencePage({ params }: { params: Promise<{ slug
           </div>
         </div>
       </section>
-      <section className="py-14 px-6 bg-gray-100">
-        <div className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-5">
-          {HIGHLIGHTS.map(({ icon: Icon, title, sub, desc }) => (
-            <div key={title} className="bg-white rounded-3xl p-7 shadow-sm hover:shadow-md transition-shadow space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#1e3a5f]/8 flex items-center justify-center">
-                <Icon className="h-6 w-6 text-[#1e3a5f]" strokeWidth={1.75} />
-              </div>
-              <div>
-                <p className="font-bold text-gray-900">{title}</p>
-                <p className="text-xs text-gray-400 mt-0.5">{sub}</p>
-              </div>
-              <p className="text-sm text-gray-500 leading-relaxed">{desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-      <section id="amenities" className="py-10 px-6 bg-white">
+      <section id="amenities" className="py-10 px-6 bg-gray-100">
         <div className="max-w-3xl mx-auto">
           <SectionHeader>Amenities</SectionHeader>
           <div className="mt-8 bg-gray-50 rounded-3xl p-7">
@@ -211,8 +174,8 @@ export default async function ResidencePage({ params }: { params: Promise<{ slug
                     key={a.id}
                     className="flex items-center gap-3 bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow"
                   >
-                    <span className="w-7 h-7 rounded-xl bg-[#1e3a5f]/8 flex items-center justify-center flex-shrink-0">
-                      <Check className="h-3.5 w-3.5 text-[#1e3a5f]" strokeWidth={2.5} />
+                    <span className="w-7 h-7 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
+                      <Check className="h-3.5 w-3.5 text-emerald-500" strokeWidth={2.5} />
                     </span>
                     <span className="text-sm font-medium text-gray-800">{a.name}</span>
                   </div>
@@ -232,7 +195,7 @@ export default async function ResidencePage({ params }: { params: Promise<{ slug
               <ul className="space-y-3">
                 {inclusions.map((item) => (
                   <li key={item.id} className="flex items-start gap-3 bg-white rounded-2xl p-4 shadow-sm">
-                    <span className="w-6 h-6 rounded-lg bg-emerald-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="w-6 h-6 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0 mt-0.5">
                       <Check className="h-3.5 w-3.5 text-emerald-500" strokeWidth={2.5} />
                     </span>
                     <span className="text-sm text-gray-700 leading-relaxed">{item.description}</span>

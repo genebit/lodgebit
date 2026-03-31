@@ -3,15 +3,20 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import {
-  startOfWeek, endOfWeek, startOfMonth, endOfMonth,
-  startOfYear, endOfYear, isWithinInterval, parseISO,
-  format, eachDayOfInterval, eachMonthOfInterval, eachWeekOfInterval,
+  startOfWeek,
+  endOfWeek,
+  startOfMonth,
+  endOfMonth,
+  startOfYear,
+  endOfYear,
+  isWithinInterval,
+  parseISO,
+  format,
+  eachDayOfInterval,
+  eachMonthOfInterval,
 } from "date-fns";
-import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-} from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Download, TrendingUp, Users, CheckCircle, XCircle, Clock, Building2 } from "lucide-react";
 import type { DashboardBooking } from "@/app/admin/dashboard/page";
 
@@ -32,7 +37,8 @@ const PERIOD_LABELS: Record<Period, string> = {
 
 function getPeriodInterval(period: Period): { start: Date; end: Date } | null {
   const now = new Date();
-  if (period === "week") return { start: startOfWeek(now, { weekStartsOn: 1 }), end: endOfWeek(now, { weekStartsOn: 1 }) };
+  if (period === "week")
+    return { start: startOfWeek(now, { weekStartsOn: 1 }), end: endOfWeek(now, { weekStartsOn: 1 }) };
   if (period === "month") return { start: startOfMonth(now), end: endOfMonth(now) };
   if (period === "year") return { start: startOfYear(now), end: endOfYear(now) };
   return null;
@@ -138,14 +144,14 @@ export default function DashboardClient({ bookings, residenceCount, unitCount }:
     const { utils, writeFile } = await import("xlsx");
     const rows = filtered.map((b) => ({
       "Guest Name": b.guest_name,
-      "Contact": b.guest_contact ?? "",
-      "Unit": b.unit_name ?? "",
-      "Residence": b.residence_name ?? "",
+      Contact: b.guest_contact ?? "",
+      Unit: b.unit_name ?? "",
+      Residence: b.residence_name ?? "",
       "Check-in": format(parseISO(b.check_in), "yyyy-MM-dd"),
       "Check-out": format(parseISO(b.check_out), "yyyy-MM-dd"),
-      "Pax": b.pax ?? "",
-      "Status": b.status,
-      "Source": b.source,
+      Pax: b.pax ?? "",
+      Status: b.status,
+      Source: b.source,
       "Amount (₱)": b.total_amount ?? "",
     }));
     const ws = utils.json_to_sheet(rows);
@@ -157,7 +163,6 @@ export default function DashboardClient({ bookings, residenceCount, unitCount }:
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <h2 className="text-xl font-semibold">Dashboard</h2>
         <div className="flex items-center gap-2 flex-wrap">
@@ -181,19 +186,30 @@ export default function DashboardClient({ bookings, residenceCount, unitCount }:
         </div>
       </div>
 
-      {/* KPI Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
         <KpiCard label="Total Bookings" value={kpis.total} icon={<Users className="h-4 w-4" />} />
         <KpiCard label="Confirmed" value={kpis.confirmed} icon={<CheckCircle className="h-4 w-4 text-green-500" />} />
         <KpiCard label="Completed" value={kpis.completed} icon={<CheckCircle className="h-4 w-4 text-indigo-500" />} />
         <KpiCard label="Cancelled" value={kpis.cancelled} icon={<XCircle className="h-4 w-4 text-red-500" />} />
         <KpiCard label="Pending" value={kpis.pending} icon={<Clock className="h-4 w-4 text-yellow-500" />} />
-        <KpiCard label="Gross Revenue" value={formatCurrency(kpis.grossRevenue)} icon={<TrendingUp className="h-4 w-4 text-emerald-500" />} />
-        <KpiCard label="Avg Booking Value" value={formatCurrency(kpis.avgValue)} icon={<TrendingUp className="h-4 w-4 text-blue-500" />} />
-        <KpiCard label="Properties" value={`${residenceCount} residences · ${unitCount} units`} icon={<Building2 className="h-4 w-4 text-muted-foreground" />} small />
+        <KpiCard
+          label="Gross Revenue"
+          value={formatCurrency(kpis.grossRevenue)}
+          icon={<TrendingUp className="h-4 w-4 text-emerald-500" />}
+        />
+        <KpiCard
+          label="Avg Booking Value"
+          value={formatCurrency(kpis.avgValue)}
+          icon={<TrendingUp className="h-4 w-4 text-blue-500" />}
+        />
+        <KpiCard
+          label="Properties"
+          value={`${residenceCount} residences · ${unitCount} units`}
+          icon={<Building2 className="h-4 w-4 text-muted-foreground" />}
+          small
+        />
       </div>
 
-      {/* Revenue Chart */}
       <div className="bg-card border rounded-lg p-4">
         <h3 className="text-sm font-semibold mb-4">Gross Revenue — {PERIOD_LABELS[period]}</h3>
         {chartData.length === 0 || chartData.every((d) => d.revenue === 0) ? (
@@ -203,11 +219,7 @@ export default function DashboardClient({ bookings, residenceCount, unitCount }:
             <BarChart data={chartData} margin={{ top: 0, right: 8, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
               <XAxis dataKey="label" tick={{ fontSize: 11 }} />
-              <YAxis
-                tickFormatter={(v) => `₱${(v / 1000).toFixed(0)}k`}
-                tick={{ fontSize: 11 }}
-                width={52}
-              />
+              <YAxis tickFormatter={(v) => `₱${(v / 1000).toFixed(0)}k`} tick={{ fontSize: 11 }} width={52} />
               <Tooltip
                 formatter={(value: number) => [formatCurrency(value), "Revenue"]}
                 contentStyle={{ fontSize: 12 }}
@@ -218,11 +230,12 @@ export default function DashboardClient({ bookings, residenceCount, unitCount }:
         )}
       </div>
 
-      {/* Recent Bookings */}
       <div className="bg-card border rounded-lg overflow-hidden">
         <div className="flex items-center justify-between px-4 py-3 border-b">
           <h3 className="text-sm font-semibold">Recent Bookings</h3>
-          <Link href="/admin/bookings" className="text-xs text-primary hover:underline">View all</Link>
+          <Link href="/admin/bookings" className="text-xs text-primary hover:underline">
+            View all
+          </Link>
         </div>
         <div className="divide-y">
           {recentBookings.length === 0 && (
@@ -237,14 +250,17 @@ export default function DashboardClient({ bookings, residenceCount, unitCount }:
               <div className="min-w-0">
                 <p className="text-sm font-medium truncate">{b.guest_name}</p>
                 <p className="text-xs text-muted-foreground">
-                  {b.unit_name ?? "—"} · {format(parseISO(b.check_in), "MMM d")} – {format(parseISO(b.check_out), "MMM d, yyyy")}
+                  {b.unit_name ?? "—"} · {format(parseISO(b.check_in), "MMM d")} –{" "}
+                  {format(parseISO(b.check_out), "MMM d, yyyy")}
                 </p>
               </div>
               <div className="flex items-center gap-3 shrink-0 ml-3">
                 {b.total_amount != null && (
                   <span className="text-sm font-medium">{formatCurrency(b.total_amount)}</span>
                 )}
-                <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${statusColors[b.status] ?? "bg-muted text-muted-foreground"}`}>
+                <span
+                  className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${statusColors[b.status] ?? "bg-muted text-muted-foreground"}`}
+                >
                   {b.status}
                 </span>
               </div>
@@ -256,7 +272,17 @@ export default function DashboardClient({ bookings, residenceCount, unitCount }:
   );
 }
 
-function KpiCard({ label, value, icon, small }: { label: string; value: string | number; icon: React.ReactNode; small?: boolean }) {
+function KpiCard({
+  label,
+  value,
+  icon,
+  small,
+}: {
+  label: string;
+  value: string | number;
+  icon: React.ReactNode;
+  small?: boolean;
+}) {
   return (
     <div className="bg-card border rounded-lg p-4 space-y-2">
       <div className="flex items-center justify-between">

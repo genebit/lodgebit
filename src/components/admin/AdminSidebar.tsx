@@ -31,7 +31,6 @@ export default function AdminSidebar() {
 
   return (
     <>
-      {/* Desktop sidebar */}
       <aside className="hidden md:flex w-56 flex-col bg-card border-r h-screen sticky top-0">
         <div className="p-3.5 border-b flex items-center gap-3">
           <Image src="/images/logo/logo.svg" alt="Lodgebit" width={110} height={32} className="h-8 w-auto" />
@@ -56,7 +55,6 @@ export default function AdminSidebar() {
         </nav>
       </aside>
 
-      {/* Mobile bottom navigation */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t flex items-center justify-around py-2">
         {navItems.map(({ label, href, icon: Icon }) => (
           <Link

@@ -82,7 +82,6 @@ export default function LoginPage() {
           <CardDescription>Sign in to the admin panel</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Google Sign-In */}
           <Button type="button" variant="outline" className="w-full" onClick={handleGoogleSignIn}>
             <GoogleIcon />
             <span className="ml-2">Sign in with Google</span>
@@ -97,7 +96,6 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Credentials form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-1">
               <Label htmlFor="email">

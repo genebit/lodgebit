@@ -100,7 +100,6 @@ export default function UnitGallery({ units }: UnitGalleryProps) {
           </div>
         )}
 
-        {/* Bento grid */}
         {images.length === 0 ? (
           <p className="text-gray-400 text-sm text-center py-8">No photos for this unit yet.</p>
         ) : (
@@ -119,7 +118,6 @@ export default function UnitGallery({ units }: UnitGalleryProps) {
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                   sizes="(max-width: 768px) 50vw, 33vw"
                 />
-                {/* Hover overlay */}
                 <span className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 rounded-3xl" />
               </button>
             ))}
@@ -127,18 +125,15 @@ export default function UnitGallery({ units }: UnitGalleryProps) {
         )}
       </div>
 
-      {/* Lightbox */}
       {currentImage && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm"
           onClick={closeLightbox}
         >
-          {/* Counter */}
           <div className="absolute top-4 left-1/2 -translate-x-1/2 text-white/60 text-sm font-medium tabular-nums select-none">
             {(lightboxIdx ?? 0) + 1} / {images.length}
           </div>
 
-          {/* Close */}
           <button
             type="button"
             onClick={closeLightbox}
@@ -148,7 +143,6 @@ export default function UnitGallery({ units }: UnitGalleryProps) {
             <X className="h-5 w-5" />
           </button>
 
-          {/* Prev */}
           {images.length > 1 && (
             <button
               type="button"
@@ -163,7 +157,6 @@ export default function UnitGallery({ units }: UnitGalleryProps) {
             </button>
           )}
 
-          {/* Image */}
           <div
             className="relative w-full max-w-4xl max-h-[85vh] mx-16 aspect-[4/3]"
             onClick={(e) => e.stopPropagation()}
@@ -178,14 +171,12 @@ export default function UnitGallery({ units }: UnitGalleryProps) {
             />
           </div>
 
-          {/* Caption */}
           {currentImage.caption && (
             <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/70 text-sm text-center max-w-sm px-4">
               {currentImage.caption}
             </p>
           )}
 
-          {/* Next */}
           {images.length > 1 && (
             <button
               type="button"
@@ -200,7 +191,6 @@ export default function UnitGallery({ units }: UnitGalleryProps) {
             </button>
           )}
 
-          {/* Dot indicators */}
           {images.length > 1 && (
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-1.5">
               {images.map((_, i) => (

@@ -25,17 +25,12 @@ export default async function LodgebitIndexPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-
-      {/* Header */}
       <header className="bg-[#1e3a5f] text-white py-16 px-6 text-center">
         <p className="text-white/50 text-xs uppercase tracking-[0.3em] font-semibold mb-3">Powered by</p>
         <h1 className="text-5xl sm:text-6xl font-black uppercase tracking-wider">Lodgebit</h1>
-        <p className="text-white/60 text-sm mt-3 max-w-sm mx-auto">
-          Find and book your perfect transient stay.
-        </p>
+        <p className="text-white/60 text-sm mt-3 max-w-sm mx-auto">Find and book your perfect transient stay.</p>
       </header>
 
-      {/* Residences */}
       <main className="flex-1 max-w-3xl mx-auto w-full px-6 py-14">
         {residences.length === 0 ? (
           <div className="text-center py-20">
@@ -50,7 +45,6 @@ export default async function LodgebitIndexPage() {
                 href={r.slug ? `/r/${r.slug}` : "#"}
                 className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-all border border-gray-100"
               >
-                {/* Cover */}
                 <div className="relative h-40 bg-[#1e3a5f]/10">
                   {r.cover_image_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -66,7 +60,6 @@ export default async function LodgebitIndexPage() {
                   )}
                 </div>
 
-                {/* Info */}
                 <div className="p-5 space-y-2">
                   <div className="flex items-start justify-between gap-2">
                     <h2 className="font-bold text-gray-900 text-lg leading-tight">{r.name}</h2>
@@ -81,9 +74,7 @@ export default async function LodgebitIndexPage() {
                   {r.description && (
                     <p className="text-sm text-gray-500 leading-relaxed line-clamp-2">{r.description}</p>
                   )}
-                  {!r.slug && (
-                    <p className="text-xs text-amber-500 font-medium">Page not yet published</p>
-                  )}
+                  {!r.slug && <p className="text-xs text-amber-500 font-medium">Page not yet published</p>}
                 </div>
               </Link>
             ))}
@@ -91,7 +82,6 @@ export default async function LodgebitIndexPage() {
         )}
       </main>
 
-      {/* Footer */}
       <footer className="text-center py-6 text-gray-400 text-xs border-t">
         © {new Date().getFullYear()} Lodgebit. All rights reserved.
       </footer>

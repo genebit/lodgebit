@@ -77,7 +77,10 @@ export default function UnitImageManager({ unitId, initialImages }: UnitImageMan
 
   async function handleDelete(id: string) {
     const res = await fetch(`/api/unit-images/${id}`, { method: "DELETE" });
-    if (!res.ok) { toast.error("Failed to delete image"); return; }
+    if (!res.ok) {
+      toast.error("Failed to delete image");
+      return;
+    }
     setImages((prev) => prev.filter((img) => img.id !== id));
     toast.success("Image deleted");
   }
@@ -88,14 +91,16 @@ export default function UnitImageManager({ unitId, initialImages }: UnitImageMan
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ is_cover: true }),
     });
-    if (!res.ok) { toast.error("Failed to set cover"); return; }
+    if (!res.ok) {
+      toast.error("Failed to set cover");
+      return;
+    }
     setImages((prev) => prev.map((img) => ({ ...img, is_cover: img.id === id })));
     toast.success("Cover image updated");
   }
 
   return (
     <div className="space-y-4">
-      {/* Upload button */}
       <div>
         <input
           ref={fileRef}
@@ -105,16 +110,15 @@ export default function UnitImageManager({ unitId, initialImages }: UnitImageMan
           className="hidden"
           onChange={handleUpload}
         />
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => fileRef.current?.click()}
-          disabled={uploading}
-        >
+        <Button type="button" variant="outline" onClick={() => fileRef.current?.click()} disabled={uploading}>
           {uploading ? (
-            <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Uploading…</>
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Uploading…
+            </>
           ) : (
-            <><Upload className="h-4 w-4 mr-2" /> Upload Images</>
+            <>
+              <Upload className="h-4 w-4 mr-2" /> Upload Images
+            </>
           )}
         </Button>
         <p className="text-xs text-muted-foreground mt-1">
@@ -122,7 +126,6 @@ export default function UnitImageManager({ unitId, initialImages }: UnitImageMan
         </p>
       </div>
 
-      {/* Image grid */}
       {images.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
           {images.map((img) => (
@@ -132,18 +135,12 @@ export default function UnitImageManager({ unitId, initialImages }: UnitImageMan
                 img.is_cover ? "border-primary" : "border-transparent"
               }`}
             >
-              <Image
-                src={img.image_url}
-                alt={img.caption ?? "Unit image"}
-                fill
-                className="object-cover"
-              />
+              <Image src={img.image_url} alt={img.caption ?? "Unit image"} fill className="object-cover" />
               {img.is_cover && (
                 <span className="absolute top-1 left-1 bg-primary text-primary-foreground text-[10px] font-bold px-1.5 py-0.5 rounded">
                   Cover
                 </span>
               )}
-              {/* Actions on hover */}
               <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                 {!img.is_cover && (
                   <button

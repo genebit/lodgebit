@@ -28,7 +28,10 @@ function slugify(str: string): string {
 
 const residenceSchema = z.object({
   name: z.string().min(1, "Name required"),
-  slug: z.string().regex(/^[a-z0-9-]*$/, "Slug must be lowercase letters, numbers and hyphens").optional(),
+  slug: z
+    .string()
+    .regex(/^[a-z0-9-]*$/, "Slug must be lowercase letters, numbers and hyphens")
+    .optional(),
   description: z.string().optional(),
   address: z.string().optional(),
   latitude: z.coerce.number().min(-90).max(90).optional(),
@@ -97,7 +100,9 @@ export default function ResidenceForm({ residenceId, defaultValues }: ResidenceF
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 max-w-2xl">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-1 sm:col-span-2">
-          <Label htmlFor="name">Residence Name <Req /></Label>
+          <Label htmlFor="name">
+            Residence Name <Req />
+          </Label>
           <Input id="name" {...register("name")} onBlur={handleNameBlur} />
           {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
         </div>
@@ -114,9 +119,7 @@ export default function ResidenceForm({ residenceId, defaultValues }: ResidenceF
             />
           </div>
           {errors.slug && <p className="text-xs text-destructive">{errors.slug.message}</p>}
-          <p className="text-xs text-muted-foreground">
-            Auto-generated from name. This becomes the public page URL.
-          </p>
+          <p className="text-xs text-muted-foreground">Auto-generated from name. This becomes the public page URL.</p>
         </div>
 
         <div className="space-y-1 sm:col-span-2">
@@ -139,7 +142,6 @@ export default function ResidenceForm({ residenceId, defaultValues }: ResidenceF
               setValue("longitude", lng, { shouldValidate: true });
             }}
           />
-          {/* Read-only coordinate display */}
           {(watch("latitude") || watch("longitude")) && (
             <p className="text-xs text-muted-foreground">
               {watch("latitude")?.toFixed(6)}, {watch("longitude")?.toFixed(6)}
@@ -164,7 +166,8 @@ export default function ResidenceForm({ residenceId, defaultValues }: ResidenceF
             {...register("meta_page_access_token")}
           />
           <p className="text-xs text-muted-foreground">
-            Long-lived token from Meta for Developers → Tools → Access Token Debugger. Required for Facebook auto-posting.
+            Long-lived token from Meta for Developers → Tools → Access Token Debugger. Required for Facebook
+            auto-posting.
           </p>
         </div>
       </div>

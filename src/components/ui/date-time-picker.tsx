@@ -15,12 +15,7 @@ interface DateTimePickerProps {
   disabled?: boolean;
 }
 
-export function DateTimePicker({
-  value,
-  onChange,
-  placeholder = "Pick date & time",
-  disabled,
-}: DateTimePickerProps) {
+export function DateTimePicker({ value, onChange, placeholder = "Pick date & time", disabled }: DateTimePickerProps) {
   const [open, setOpen] = useState(false);
 
   const parsed = value ? new Date(value) : undefined;
@@ -45,7 +40,7 @@ export function DateTimePicker({
 
   function handleHour(h: number) {
     const clamped = Math.min(12, Math.max(1, h));
-    const next24 = isPm ? (clamped === 12 ? 12 : clamped + 12) : (clamped === 12 ? 0 : clamped);
+    const next24 = isPm ? (clamped === 12 ? 12 : clamped + 12) : clamped === 12 ? 0 : clamped;
     const base = valid ? new Date(parsed) : new Date();
     base.setHours(next24);
     base.setMinutes(minutes);
@@ -74,15 +69,10 @@ export function DateTimePicker({
           type="button"
           variant="outline"
           disabled={disabled}
-          className={cn(
-            "w-full justify-start text-left font-normal",
-            !valid && "text-muted-foreground"
-          )}
+          className={cn("w-full justify-start text-left font-normal", !valid && "text-muted-foreground")}
         >
           <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
-          {valid
-            ? format(parsed, "MMM d, yyyy 'at' h:mm aa")
-            : placeholder}
+          {valid ? format(parsed, "MMM d, yyyy 'at' h:mm aa") : placeholder}
         </Button>
       </PopoverTrigger>
 
@@ -95,11 +85,8 @@ export function DateTimePicker({
           className="!w-full"
         />
 
-        {/* Time row */}
         <div className="border-t px-3 py-3 flex items-center gap-2">
           <Clock className="h-4 w-4 text-muted-foreground shrink-0" />
-          <span className="text-sm text-muted-foreground">Time</span>
-
           <div className="flex items-center gap-1 ml-auto">
             <input
               type="number"
@@ -107,7 +94,7 @@ export function DateTimePicker({
               max={12}
               value={String(hours12).padStart(2, "0")}
               onChange={(e) => handleHour(Number(e.target.value))}
-              className="w-12 border rounded-md px-1.5 py-1 text-sm text-center tabular-nums focus:outline-none focus:ring-2 focus:ring-ring"
+              className="border rounded-md px-1.5 py-1.5 text-sm text-center tabular-nums focus:outline-none focus:ring-2 focus:ring-ring"
             />
             <span className="text-muted-foreground font-medium">:</span>
             <input
@@ -117,12 +104,12 @@ export function DateTimePicker({
               step={5}
               value={String(minutes).padStart(2, "0")}
               onChange={(e) => handleMinute(Number(e.target.value))}
-              className="w-12 border rounded-md px-1.5 py-1 text-sm text-center tabular-nums focus:outline-none focus:ring-2 focus:ring-ring"
+              className="border rounded-md px-1.5 py-1.5 text-sm text-center tabular-nums focus:outline-none focus:ring-2 focus:ring-ring"
             />
             <button
               type="button"
               onClick={toggleAmPm}
-              className="w-10 text-xs font-semibold border rounded-md py-1 hover:bg-muted transition-colors"
+              className="text-xs font-semibold border rounded-md px-3 py-2 hover:bg-muted transition-colors"
             >
               {isPm ? "PM" : "AM"}
             </button>
