@@ -30,6 +30,7 @@ export async function GET(req: NextRequest) {
   let query = supabaseAdmin
     .from("bookings")
     .select("*, units(id, name, residence_id)")
+    .is("deleted_at", null)
     .order("check_in", { ascending: false });
 
   if (status) query = query.eq("status", status);

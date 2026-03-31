@@ -35,6 +35,7 @@ export default async function DashboardPage() {
       .select(
         "id, guest_name, guest_contact, check_in, check_out, status, total_amount, pax, source, units(name, residences(name))",
       )
+      .is("deleted_at", null)
       .order("check_in", { ascending: false }),
     supabase.from("residences").select("id", { count: "exact", head: true }),
     supabase.from("units").select("id", { count: "exact", head: true }),

@@ -97,7 +97,11 @@ export async function DELETE(
     .eq("id", id)
     .single();
 
-  const { error } = await supabaseAdmin.from("bookings").delete().eq("id", id);
+  // Soft delete — set deleted_at instead of hard deleting
+  const { error } = await supabaseAdmin
+    .from("bookings")
+    .update({ deleted_at: new Date().toISOString() })
+    .eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   if (before) {

@@ -148,6 +148,7 @@ create table bookings (
   status varchar not null default 'pending' check (status in ('pending', 'confirmed', 'completed', 'cancelled')),
   source varchar not null default 'manual' check (source in ('manual', 'ocr')),
   notes text,
+  deleted_at timestamp with time zone default null,
   created_at timestamp with time zone default now(),
   updated_at timestamp with time zone default now(),
   constraint check_dates check (check_out > check_in),
@@ -252,6 +253,7 @@ create index idx_bookings_unit_id on bookings(unit_id);
 create index idx_bookings_status on bookings(status);
 create index idx_bookings_check_in on bookings(check_in);
 create index idx_bookings_check_out on bookings(check_out);
+create index idx_bookings_deleted_at on bookings(deleted_at) where deleted_at is null;
 
 -- Guest IDs & Scans
 create index idx_guest_ids_booking_id on guest_ids(booking_id);

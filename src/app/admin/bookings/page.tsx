@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Table, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus } from "lucide-react";
 import type { Booking } from "@/types";
-import BookingTableRows from "@/components/admin/BookingTableRows";
+import BookingsPageClient from "@/components/admin/BookingsPageClient";
 import PageHero from "@/components/admin/PageHero";
 
 export const metadata: Metadata = { title: "Bookings" };
@@ -19,6 +15,7 @@ export default async function BookingsPage() {
   const { data } = await supabase
     .from("bookings")
     .select("*, units(name)")
+    .is("deleted_at", null)
     .order("check_in", { ascending: false })
     .limit(100);
 
@@ -27,31 +24,7 @@ export default async function BookingsPage() {
   return (
     <div className="flex flex-col gap-3">
       <PageHero heading="Bookings" leadingText="Track, manage, and update all guest reservations and stay details." />
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold">Bookings</h2>
-        <Button asChild size="sm">
-          <Link href="/admin/bookings/new">
-            <Plus className="h-4 w-4 mr-1" /> New Booking
-          </Link>
-        </Button>
-      </div>
-
-      <div className="bg-card rounded-lg border overflow-hidden">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Guest</TableHead>
-              <TableHead>Unit</TableHead>
-              <TableHead>Check-in</TableHead>
-              <TableHead>Check-out</TableHead>
-              <TableHead>Pax</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Source</TableHead>
-            </TableRow>
-          </TableHeader>
-          <BookingTableRows bookings={bookings} />
-        </Table>
-      </div>
+      <BookingsPageClient bookings={bookings} />
     </div>
   );
 }

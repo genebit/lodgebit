@@ -29,6 +29,8 @@ interface BookingDetail extends Booking {
   booking_logs: unknown[];
 }
 
+type GuestIdWithUrl = BookingDetail["guest_ids"][number] & { publicUrl: string };
+
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800",
   confirmed: "bg-green-100 text-green-800",
@@ -52,6 +54,11 @@ export default async function BookingDetailPage({
 
   const booking = data as BookingDetail | null;
   if (!booking) notFound();
+
+  const guestIdsWithUrls: GuestIdWithUrl[] = (booking.guest_ids ?? []).map((gid) => ({
+    ...gid,
+    publicUrl: supabase.storage.from("guest-ids").getPublicUrl(gid.image_url).data.publicUrl,
+  }));
 
   const unit = booking.units;
   const hasFacebook = !!(unit?.residences?.facebook_page_id);
@@ -141,7 +148,7 @@ export default async function BookingDetailPage({
         </CardContent>
       </Card>
 
-      <GuestIDUploader bookingId={id} existingIds={booking.guest_ids} />
+      <GuestIDUploader bookingId={id} existingIds={guestIdsWithUrls} />
 
       {hasFacebook && (
         <FacebookPostButton
