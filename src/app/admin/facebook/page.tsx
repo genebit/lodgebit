@@ -2,17 +2,11 @@ import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Facebook Posts" };
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Link from "next/link";
 import { format } from "date-fns";
 import type { FbPost } from "@/types";
+import PageHero from "@/components/admin/PageHero";
 
 interface FbPostRow extends FbPost {
   bookings: { guest_name: string } | null;
@@ -36,8 +30,9 @@ export default async function FacebookPage() {
   const posts = (data ?? []) as FbPostRow[];
 
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-6">Facebook Posts</h2>
+    <div className="flex flex-col gap-3">
+      <PageHero heading="Facebook Posts" leadingText="Track and view all Facebook posts to business page." />
+      <h2 className="text-xl font-semibold mb-6">Posts</h2>
 
       <div className="bg-card rounded-lg border overflow-hidden">
         <Table>
@@ -62,9 +57,7 @@ export default async function FacebookPage() {
             {posts.map((post) => (
               <TableRow key={post.id}>
                 <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
-                  {post.posted_at
-                    ? format(new Date(post.posted_at), "MMM d, yyyy HH:mm")
-                    : "—"}
+                  {post.posted_at ? format(new Date(post.posted_at), "MMM d, yyyy HH:mm") : "—"}
                 </TableCell>
                 <TableCell>
                   <span
@@ -75,14 +68,9 @@ export default async function FacebookPage() {
                     {post.status}
                   </span>
                 </TableCell>
-                <TableCell className="text-sm capitalize">
-                  {post.post_type.replace("_", " ")}
-                </TableCell>
+                <TableCell className="text-sm capitalize">{post.post_type.replace("_", " ")}</TableCell>
                 <TableCell>
-                  <Link
-                    href={`/admin/bookings/${post.booking_id}`}
-                    className="hover:underline text-sm"
-                  >
+                  <Link href={`/admin/bookings/${post.booking_id}`} className="hover:underline text-sm">
                     {post.bookings?.guest_name ?? "—"}
                   </Link>
                 </TableCell>

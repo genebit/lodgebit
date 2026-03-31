@@ -6,6 +6,7 @@ import { Table, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus } from "lucide-react";
 import type { Booking } from "@/types";
 import BookingTableRows from "@/components/admin/BookingTableRows";
+import PageHero from "@/components/admin/PageHero";
 
 export const metadata: Metadata = { title: "Bookings" };
 
@@ -24,7 +25,8 @@ export default async function BookingsPage() {
   const bookings = (data ?? []) as BookingRow[];
 
   return (
-    <div>
+    <div className="flex flex-col gap-3">
+      <PageHero heading="Bookings" leadingText="Track, manage, and update all guest reservations and stay details." />
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold">Bookings</h2>
         <Button asChild size="sm">

@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import BookingCalendar from "@/components/admin/BookingCalendar";
 import type { BookingWithUnit } from "@/types";
 import type { Metadata } from "next";
+import PageHero from "@/components/admin/PageHero";
 
 export const metadata: Metadata = { title: "Calendar" };
 
@@ -13,8 +14,12 @@ export default async function CalendarPage() {
     .neq("status", "cancelled");
 
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-4">Booking Calendar</h2>
+    <div className="flex flex-col gap-3">
+      <PageHero
+        heading="Booking Calendar"
+        leadingText="A comprehensive view of all reservations across your residences."
+      />
+      <h2 className="text-xl font-semibold mb-4">Schedules</h2>
       <BookingCalendar bookings={(bookings ?? []) as BookingWithUnit[]} />
     </div>
   );

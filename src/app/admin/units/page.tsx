@@ -9,6 +9,7 @@ import { Table, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus } from "lucide-react";
 import type { Unit } from "@/types";
 import UnitTableRows from "@/components/admin/UnitTableRows";
+import PageHero from "@/components/admin/PageHero";
 
 interface UnitRow extends Unit {
   residences: { name: string } | null;
@@ -16,15 +17,13 @@ interface UnitRow extends Unit {
 
 export default async function UnitsPage() {
   const supabase = await createClient();
-  const { data } = await supabase
-    .from("units")
-    .select("*, residences(name)")
-    .order("name");
+  const { data } = await supabase.from("units").select("*, residences(name)").order("name");
 
   const units = (data ?? []) as UnitRow[];
 
   return (
-    <div>
+    <div className="flex flex-col gap-3">
+      <PageHero heading="Residential Units" leadingText="Track, manage, and update all owned units and room details." />
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold">Units</h2>
         <Button asChild size="sm">
