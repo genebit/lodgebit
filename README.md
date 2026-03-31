@@ -161,7 +161,44 @@ VALUES (
 
 > **Roles:** `super_admin` has full access. `admin` is a standard admin (role enforcement is handled at the app level).
 
-### 5. Google OAuth (Sign-in with Google)
+### 5. Facebook Page Integration
+
+Facebook posting requires a **Page Access Token** and the correct **Page ID** stored in Supabase per residence. Follow these steps exactly — order matters.
+
+#### Step 1 — Create a Meta App
+
+1. Go to [Meta for Developers](https://developers.facebook.com) → **My Apps → Create App**
+2. Choose **Business** type, name it (e.g. `Lodgebit`)
+3. Note the **App ID** and **App Secret** from Settings → Basic
+
+#### Step 2 — Generate a Page Access Token (never expires)
+
+Page Access Tokens generated from a **long-lived user token** do not expire. Page tokens generated from a short-lived token expire in 1 hour.
+
+1. Go to **Tools → Graph API Explorer**
+2. Select your app (e.g. `Lodgebit`) under **Meta App**
+3. Under **User or Page**, keep **your user account** selected
+4. Under **Permissions**, add: `pages_show_list`, `pages_read_engagement`, `pages_manage_posts`
+5. Click **Generate Access Token** → approve the OAuth dialog
+6. Click the **ⓘ info icon** next to the token → **Open in Access Token Debugger** → **Extend Access Token** → copy the 60-day user token
+7. Go back to Graph API Explorer → **manually paste** the 60-day token into the Access Token field
+8. Open the **User or Page** dropdown → under **Page Access Tokens** → click your Page name
+9. Copy the token now shown in the Access Token field
+10. Paste it into the **Access Token Debugger** — confirm Type = **Page** and Expires = **Never** (or ~60 days if app is in Development mode)
+
+> **Note:** The "Never" expiry only applies to apps in **Live mode** (requires Meta app review). In Development mode, tokens expire after ~60 days. Set a reminder to refresh before expiry.
+
+#### Step 3 — Get the correct Page ID
+
+In the Access Token Debugger, copy the **Page ID** shown next to your page name (e.g. `1099355329923830`). Do **not** use a personal profile ID.
+
+#### Step 4 — Update The Page ID
+
+Navigate throught the application under residences page and update the Facebook Page ID
+
+---
+
+### 6. Google OAuth (Sign-in with Google)
 
 1. Create a project at [Google Cloud Console](https://console.cloud.google.com)
 2. Enable the **Google+ API** or **People API**
@@ -171,7 +208,7 @@ VALUES (
 
 > Only users whose email already exists in the `admins` table can sign in with Google.
 
-### 6. Run the development server
+### 7. Run the development server
 
 ```bash
 npm run dev
