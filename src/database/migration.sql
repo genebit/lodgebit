@@ -29,18 +29,24 @@ comment on column admins.role is 'admin | super_admin';
 create table residences (
   id uuid primary key default gen_random_uuid(),
   name varchar not null,
+  slug varchar unique,
   description text,
   address varchar,
   latitude decimal(9,6),
   longitude decimal(9,6),
   facebook_page_id varchar,
+  meta_page_access_token text,
+  cover_image_url text,
   created_at timestamp with time zone default now()
 );
 
 comment on table residences is 'Transient residence properties';
+comment on column residences.slug is 'URL-safe identifier for the public page at /r/[slug]';
 comment on column residences.latitude is 'GPS latitude for map pin';
 comment on column residences.longitude is 'GPS longitude for map pin';
-comment on column residences.facebook_page_id is 'Meta page ID for auto-posting';
+comment on column residences.facebook_page_id is 'Meta Page ID for auto-posting';
+comment on column residences.meta_page_access_token is 'Long-lived Meta Page Access Token — per-residence, stored securely';
+comment on column residences.cover_image_url is 'Hero background image URL for the public page (Supabase Storage)';
 
 
 -- ============================================================

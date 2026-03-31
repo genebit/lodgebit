@@ -40,31 +40,40 @@ export interface Database {
         Row: {
           id: string;
           name: string;
+          slug: string | null;
           description: string | null;
           address: string | null;
           latitude: number | null;
           longitude: number | null;
           facebook_page_id: string | null;
+          meta_page_access_token: string | null;
+          cover_image_url: string | null;
           created_at: string;
         };
         Insert: {
           id?: string;
           name: string;
+          slug?: string | null;
           description?: string | null;
           address?: string | null;
           latitude?: number | null;
           longitude?: number | null;
           facebook_page_id?: string | null;
+          meta_page_access_token?: string | null;
+          cover_image_url?: string | null;
           created_at?: string;
         };
         Update: {
           id?: string;
           name?: string;
+          slug?: string | null;
           description?: string | null;
           address?: string | null;
           latitude?: number | null;
           longitude?: number | null;
           facebook_page_id?: string | null;
+          meta_page_access_token?: string | null;
+          cover_image_url?: string | null;
           created_at?: string;
         };
       };
