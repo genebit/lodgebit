@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { format, isValid, parseISO } from "date-fns";
 import { CalendarIcon, Clock, ArrowRight } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { DateRange } from "react-day-picker";
@@ -70,16 +70,16 @@ function TimeInput({ label, iso, onChange }: TimeInputProps) {
       <p className="text-xs font-medium text-muted-foreground flex items-center gap-1">
         <Clock className="h-3 w-3" /> {label}
       </p>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1.5">
         <input
           type="number"
           min={1}
           max={12}
           value={String(hours12).padStart(2, "0")}
           onChange={(e) => handleHour(Number(e.target.value))}
-          className="w-12 border rounded-md px-1.5 py-1.5 text-sm text-center tabular-nums bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+          className="w-16 border rounded-md px-2 py-2.5 text-base text-center tabular-nums bg-background focus:outline-none focus:ring-2 focus:ring-ring"
         />
-        <span className="text-muted-foreground font-medium">:</span>
+        <span className="text-muted-foreground font-bold text-lg">:</span>
         <input
           type="number"
           min={0}
@@ -87,12 +87,12 @@ function TimeInput({ label, iso, onChange }: TimeInputProps) {
           step={5}
           value={String(minutes).padStart(2, "0")}
           onChange={(e) => handleMinute(Number(e.target.value))}
-          className="w-12 border rounded-md px-1.5 py-1.5 text-sm text-center tabular-nums bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+          className="w-16 border rounded-md px-2 py-2.5 text-base text-center tabular-nums bg-background focus:outline-none focus:ring-2 focus:ring-ring"
         />
         <button
           type="button"
           onClick={toggleAmPm}
-          className="text-xs font-semibold border rounded-md px-2.5 py-2 hover:bg-muted transition-colors"
+          className="text-sm font-semibold border rounded-md px-3.5 py-2.5 hover:bg-muted transition-colors"
         >
           {isPm ? "PM" : "AM"}
         </button>
@@ -109,6 +109,15 @@ export function DateRangePicker({
   disabled,
 }: DateRangePickerProps) {
   const [open, setOpen] = useState(false);
+  const [isSmall, setIsSmall] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    setIsSmall(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsSmall(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   const checkInDate = checkIn ? parseISO(checkIn) : undefined;
   const checkOutDate = checkOut ? parseISO(checkOut) : undefined;
@@ -158,47 +167,54 @@ export function DateRangePicker({
     : "Pick check-in & check-out";
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          type="button"
-          variant="outline"
-          disabled={disabled}
-          className={cn("w-full justify-start text-left font-normal", !validIn && "text-muted-foreground")}
-        >
-          <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
-          {validIn && validOut ? (
-            <span className="flex items-center gap-1.5">
-              {format(checkInDate!, "MMM d, yyyy 'at' h:mm aa")}
-              <ArrowRight className="h-3 w-3 text-muted-foreground" />
-              {format(checkOutDate!, "MMM d, yyyy 'at' h:mm aa")}
-            </span>
-          ) : (
-            label
-          )}
-        </Button>
-      </PopoverTrigger>
+    <>
+      <Button
+        type="button"
+        variant="outline"
+        disabled={disabled}
+        onClick={() => setOpen(true)}
+        className={cn("w-full justify-start text-left font-normal", !validIn && "text-muted-foreground")}
+      >
+        <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
+        {validIn && validOut ? (
+          <span className="flex items-center gap-1.5">
+            {format(checkInDate!, "MMM d, yyyy 'at' h:mm aa")}
+            <ArrowRight className="h-3 w-3 text-muted-foreground" />
+            {format(checkOutDate!, "MMM d, yyyy 'at' h:mm aa")}
+          </span>
+        ) : (
+          label
+        )}
+      </Button>
 
-      <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
-          mode="range"
-          selected={range}
-          onSelect={handleRangeSelect}
-          numberOfMonths={2}
-          autoFocus
-          className="!w-full"
-        />
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-2xl p-0 gap-0 max-h-[90vh] flex flex-col overflow-hidden">
+          <DialogHeader className="px-4 pt-4 pb-0 shrink-0">
+            <DialogTitle className="text-sm font-semibold">Select dates &amp; times</DialogTitle>
+          </DialogHeader>
 
-        <div className="border-t px-4 py-3 space-y-3">
-          <div className="grid grid-cols-2 gap-4">
-            <TimeInput label="Check-in time" iso={checkIn} onChange={onChangeCheckIn} />
-            <TimeInput label="Check-out time" iso={checkOut} onChange={onChangeCheckOut} />
+          <div className="overflow-y-auto flex-1">
+            <Calendar
+              mode="range"
+              selected={range}
+              onSelect={handleRangeSelect}
+              numberOfMonths={isSmall ? 1 : 2}
+              autoFocus
+              className="p-4 w-full"
+            />
           </div>
-          <div className="flex justify-end">
-            <Button size="sm" onClick={() => setOpen(false)}>Done</Button>
+
+          <div className="border-t px-4 py-3 space-y-3 shrink-0">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <TimeInput label="Check-in time" iso={checkIn} onChange={onChangeCheckIn} />
+              <TimeInput label="Check-out time" iso={checkOut} onChange={onChangeCheckOut} />
+            </div>
+            <div className="flex justify-end">
+              <Button size="sm" onClick={() => setOpen(false)}>Done</Button>
+            </div>
           </div>
-        </div>
-      </PopoverContent>
-    </Popover>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
