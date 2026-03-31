@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Plugins Related */
+
+
 @custom-variant dark (&:is(.dark *):not(.theme-light, .theme-light *));
 
 :root {
@@ -169,4 +172,21 @@ body {
   color: hsl(var(--muted-foreground));
   font-weight: 500;
   font-size: 0.75rem;
+}
+
+.pace {
+  -webkit-pointer-events: none;
+  pointer-events: none;
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.pace-inactive {
+  display: none;
+}
+
+.pace .pace-progress {
+  @apply fixed top-0 w-full h-1 text-teal-700 bg-gradient-to-r from-teal-300 to-teal-500 right-full;
 }
