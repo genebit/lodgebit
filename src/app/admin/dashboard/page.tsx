@@ -25,8 +25,8 @@ export default async function DashboardPage() {
   const session = await auth();
 
   const user = {
-    name: session.user?.name ?? null,
-    email: session.user?.email ?? null,
+    name: session?.user?.name ?? null,
+    email: session?.user?.email ?? null,
   };
 
   const [bookingsRes, residencesRes, unitsRes] = await Promise.all([

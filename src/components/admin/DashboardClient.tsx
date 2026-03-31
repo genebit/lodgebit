@@ -251,7 +251,7 @@ export default function DashboardClient({ bookings, residenceCount, unitCount }:
                 <XAxis dataKey="label" tick={{ fontSize: 11 }} />
                 <YAxis tickFormatter={(v) => `₱${(v / 1000).toFixed(0)}k`} tick={{ fontSize: 11 }} width={52} />
                 <Tooltip
-                  formatter={(value: number) => [formatCurrency(value), "Revenue"]}
+                  formatter={(value) => [formatCurrency(Number(value)), "Revenue"]}
                   contentStyle={{
                     fontSize: 12,
                     backgroundColor: "hsl(var(--card))",

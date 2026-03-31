@@ -24,7 +24,7 @@ interface CalendarEvent extends Event {
   status: string;
 }
 
-function CustomToolbar({ label, onNavigate }: ToolbarProps) {
+function CustomToolbar({ label, onNavigate }: ToolbarProps<CalendarEvent>) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 mb-4 px-1">
       <div className="flex items-center gap-1">
@@ -105,7 +105,7 @@ export default function BookingCalendar({ bookings }: { bookings: BookingWithUni
         defaultView="month"
         date={currentDate}
         onNavigate={() => {}}
-        components={{ toolbar: (props) => <CustomToolbar {...props} onNavigate={handleNavigate} /> }}
+        components={{ toolbar: (props: ToolbarProps<CalendarEvent>) => <CustomToolbar {...props} onNavigate={handleNavigate} /> }}
         dayPropGetter={(date) => {
           const status = bookedDays.get(format(date, "yyyy-MM-dd"));
           if (!status) return {};
