@@ -122,3 +122,32 @@ body {
 * {
   border-color: hsl(var(--border));
 }
+
+/* react-big-calendar border overrides */
+.rbc-calendar,
+.rbc-month-view,
+.rbc-month-row,
+.rbc-day-bg,
+.rbc-header,
+.rbc-time-view,
+.rbc-time-header,
+.rbc-time-content,
+.rbc-time-slot,
+.rbc-timeslot-group,
+.rbc-day-slot,
+.rbc-agenda-view,
+.rbc-agenda-table td,
+.rbc-agenda-table th {
+  border-color: hsl(var(--border) / 1) !important;
+}
+.rbc-off-range-bg {
+  background: transparent !important;
+}
+.rbc-today {
+  background: hsl(var(--accent) / 0.4) !important;
+}
+.rbc-header {
+  color: hsl(var(--muted-foreground));
+  font-weight: 500;
+  font-size: 0.75rem;
+}
