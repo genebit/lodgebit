@@ -9,7 +9,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardDescription } from "@/components/ui/card";
+import { Building2 } from "lucide-react";
 
 function Req() {
   return <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-500 mb-0.5 ml-1 align-middle" />;
@@ -75,61 +75,77 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-muted px-4">
-      <Card className="w-full max-w-sm">
-        <CardHeader className="text-center flex flex-col items-center gap-2">
-          <Image src="/images/logo/logo.svg" alt="Lodgebit" width={130} height={40} className="h-10 w-auto" />
-          <CardDescription>Sign in to the admin panel</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Button type="button" variant="outline" className="w-full" onClick={handleGoogleSignIn}>
-            <GoogleIcon />
-            <span className="ml-2">Sign in with Google</span>
-          </Button>
+    <main className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
+      <div className="hidden lg:flex flex-col items-center justify-center bg-primary text-primary-foreground p-12 gap-8">
+        <div className="w-full max-w-sm aspect-square rounded-2xl border-2 border-dashed border-primary-foreground/30 flex flex-col items-center justify-center gap-3 text-primary-foreground/60">
+          <Building2 className="h-16 w-16" />
+          <p className="text-sm font-medium">Illustration — replace me</p>
+        </div>
+        <div className="text-center space-y-2 max-w-xs">
+          <h1 className="text-2xl font-bold">Manage your properties with ease</h1>
+          <p className="text-sm text-primary-foreground/70">
+            Lodgebit — track bookings, scan contracts, and keep everything in one place.
+          </p>
+        </div>
+      </div>
 
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">or</span>
-            </div>
+      <div className="flex items-center justify-center px-6 py-12 bg-background">
+        <div className="w-full max-w-sm space-y-8">
+          <div className="space-y-2">
+            <Image src="/images/logo/logo.svg" alt="Lodgebit" width={130} height={40} className="h-10 w-auto" />
+            <p className="text-sm text-muted-foreground">Sign in to the admin panel</p>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-1">
-              <Label htmlFor="email">
-                Email <Req />
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="admin@example.com"
-                autoComplete="email"
-                {...register("email")}
-              />
-              {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="password">
-                Password <Req />
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                autoComplete="current-password"
-                {...register("password")}
-              />
-              {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
-            </div>
-            {errors.root && <p className="text-sm text-destructive text-center">{errors.root.message}</p>}
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Signing in…" : "Sign In"}
+          <div className="space-y-4">
+            <Button type="button" variant="outline" className="w-full" onClick={handleGoogleSignIn}>
+              <GoogleIcon />
+              <span className="ml-2">Sign in with Google</span>
             </Button>
-          </form>
-        </CardContent>
-      </Card>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">or</span>
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <div className="space-y-1">
+                <Label htmlFor="email">
+                  Email <Req />
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="admin@example.com"
+                  autoComplete="email"
+                  {...register("email")}
+                />
+                {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="password">
+                  Password <Req />
+                </Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  autoComplete="current-password"
+                  {...register("password")}
+                />
+                {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
+              </div>
+              {errors.root && <p className="text-sm text-destructive text-center">{errors.root.message}</p>}
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? "Signing in…" : "Sign In"}
+              </Button>
+            </form>
+          </div>
+        </div>
+      </div>
     </main>
   );
 }

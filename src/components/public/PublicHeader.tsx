@@ -15,7 +15,7 @@ export default function PublicHeader() {
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 font-bold text-lg text-white">
           <Building2 className="h-5 w-5 text-amber-400" />
-          Bitara Residence
+          Lodgebit
         </Link>
         <nav className="hidden md:flex items-center gap-6 text-sm">
           {navLinks.map(({ label, href }) => (
