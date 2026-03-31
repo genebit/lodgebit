@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import Image from "next/image";
 import AvailabilityCalendar from "@/components/public/AvailabilityCalendar";
 import UnitGallery from "@/components/public/UnitGallery";
-import { MapPin, Shield, Sparkles, Clock, Check, MessageCircle } from "lucide-react";
+import { MapPin, Check, MessageCircle } from "lucide-react";
 
 interface AmenityRow {
   id: string;
