@@ -6,6 +6,7 @@ import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -147,12 +148,10 @@ export default function UnitForm({ residences, unitId, defaultValues }: UnitForm
         </div>
 
         <div className="flex items-center gap-2">
-          <input
+          <Checkbox
             id="is_available"
-            type="checkbox"
             defaultChecked={defaultValues?.is_available ?? true}
-            onChange={(e) => setValue("is_available", e.target.checked)}
-            className="h-4 w-4 rounded border-input"
+            onCheckedChange={(checked) => setValue("is_available", checked === true)}
           />
           <Label htmlFor="is_available">Available for booking</Label>
         </div>

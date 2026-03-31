@@ -17,7 +17,7 @@ interface FacebookPostButtonProps {
 }
 
 export default function FacebookPostButton({ bookingId, checkIn, checkOut, unitName }: FacebookPostButtonProps) {
-  const defaultMessage = `New booking confirmed!\n\nUnit: ${unitName}\nCheck-in: ${format(new Date(checkIn), "MMM d, yyyy")}\nCheck-out: ${format(new Date(checkOut), "MMM d, yyyy")}\n\nThank you for choosing Bitara Residence! 🏠`;
+  const defaultMessage = `New booking confirmed!\n\nUnit: ${unitName}\nCheck-in: ${format(new Date(checkIn), "MMM d, yyyy")}\nCheck-out: ${format(new Date(checkOut), "MMM d, yyyy")}\n\nThank you for choosing our residence! 🏠`;
 
   const [message, setMessage] = useState(defaultMessage);
   const [posting, setPosting] = useState(false);

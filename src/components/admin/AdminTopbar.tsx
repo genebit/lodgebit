@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { signOut } from "next-auth/react";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/lib/theme";
 import { LogOut, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
