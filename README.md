@@ -2,6 +2,18 @@
 
 **Lodgebit** is a multi-residence transient booking management platform built with Next.js 16. Each residence gets its own public-facing website while sharing a single admin panel.
 
+<p align="center">
+  <img src="public/images/illustration/lodgebit-illustration.png" alt="Lodgebit Admin Dashboard" width="100%" />
+</p>
+
+<details>
+<summary><strong>System Snapshots</strong></summary>
+<br>
+
+> To be added.
+
+</details>
+
 ---
 
 ## Features
@@ -19,6 +31,12 @@
 ---
 
 ## Tech Stack
+
+<p align="left">
+  <a href="https://go-skill-icons.vercel.app/">
+    <img src="https://go-skill-icons.vercel.app/api/icons?i=nextjs,react,typescript,tailwindcss,shadcn,supabase,postgresql,authjs,gcp,facebook,pwa,vercel" />
+  </a>
+</p>
 
 | Layer | Technology |
 |-------|-----------|
@@ -68,12 +86,7 @@ cp .env.example .env.local
 
 ### 3. Supabase setup
 
-**Run the database migration** in the Supabase SQL editor (`database/migration.sql`), then add these two columns if not already present:
-
-```sql
-ALTER TABLE residences ADD COLUMN IF NOT EXISTS slug TEXT UNIQUE;
-ALTER TABLE residences ADD COLUMN IF NOT EXISTS cover_image_url TEXT;
-```
+**Run the database migration** in the Supabase SQL editor (`database/migration.sql`).
 
 **Create the following Storage buckets** in Supabase → Storage:
 
