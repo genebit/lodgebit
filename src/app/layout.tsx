@@ -9,13 +9,24 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "Bitara Residence",
-  description: "Transient Residence Booking Management",
+  title: {
+    template: "%s - Lodgebit",
+    default: "Lodgebit",
+  },
+  description: "Multi-Residence Booking Management Platform",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Bitara Residence",
+    title: "Lodgebit",
+  },
+  icons: {
+    icon: [
+      { url: "/favicon/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon/favicon.ico" },
+    ],
+    apple: "/favicon/apple-touch-icon.png",
   },
 };
 
@@ -34,9 +45,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className="scroll-smooth">
       <head>
-        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+        <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
       </head>
-      <body className={`${geistSans.variable} font-sans antialiased`}>
+      <body className={`${geistSans.variable} font-sans antialiased`} suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>
     </html>
