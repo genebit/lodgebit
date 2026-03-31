@@ -26,8 +26,10 @@ export function DateTimePicker({
   const parsed = value ? new Date(value) : undefined;
   const valid = parsed && isValid(parsed);
 
-  const hours = valid ? parsed.getHours() : 12;
+  const hours24 = valid ? parsed.getHours() : 12;
   const minutes = valid ? parsed.getMinutes() : 0;
+  const isPm = hours24 >= 12;
+  const hours12 = hours24 % 12 === 0 ? 12 : hours24 % 12;
 
   function toIso(d: Date): string {
     return format(d, "yyyy-MM-dd'T'HH:mm");
@@ -36,22 +38,32 @@ export function DateTimePicker({
   function handleDaySelect(day: Date | undefined) {
     if (!day) return;
     const next = new Date(day);
-    next.setHours(hours);
+    next.setHours(hours24);
     next.setMinutes(minutes);
     onChange(toIso(next));
   }
 
   function handleHour(h: number) {
+    const clamped = Math.min(12, Math.max(1, h));
+    const next24 = isPm ? (clamped === 12 ? 12 : clamped + 12) : (clamped === 12 ? 0 : clamped);
     const base = valid ? new Date(parsed) : new Date();
-    base.setHours(Math.min(23, Math.max(0, h)));
+    base.setHours(next24);
     base.setMinutes(minutes);
     onChange(toIso(base));
   }
 
   function handleMinute(m: number) {
     const base = valid ? new Date(parsed) : new Date();
-    base.setHours(hours);
+    base.setHours(hours24);
     base.setMinutes(Math.min(59, Math.max(0, m)));
+    onChange(toIso(base));
+  }
+
+  function toggleAmPm() {
+    const base = valid ? new Date(parsed) : new Date();
+    const newHours = isPm ? hours24 - 12 : hours24 + 12;
+    base.setHours(newHours);
+    base.setMinutes(minutes);
     onChange(toIso(base));
   }
 
@@ -74,12 +86,13 @@ export function DateTimePicker({
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-auto p-0" align="start">
+      <PopoverContent className="w-auto min-w-[320px] p-0" align="start">
         <Calendar
           mode="single"
           selected={valid ? parsed : undefined}
           onSelect={handleDaySelect}
           autoFocus
+          className="!w-full"
         />
 
         {/* Time row */}
@@ -90,9 +103,9 @@ export function DateTimePicker({
           <div className="flex items-center gap-1 ml-auto">
             <input
               type="number"
-              min={0}
-              max={23}
-              value={String(hours).padStart(2, "0")}
+              min={1}
+              max={12}
+              value={String(hours12).padStart(2, "0")}
               onChange={(e) => handleHour(Number(e.target.value))}
               className="w-12 border rounded-md px-1.5 py-1 text-sm text-center tabular-nums focus:outline-none focus:ring-2 focus:ring-ring"
             />
@@ -106,9 +119,13 @@ export function DateTimePicker({
               onChange={(e) => handleMinute(Number(e.target.value))}
               className="w-12 border rounded-md px-1.5 py-1 text-sm text-center tabular-nums focus:outline-none focus:ring-2 focus:ring-ring"
             />
-            <span className="text-xs text-muted-foreground w-7">
-              {hours < 12 ? "AM" : "PM"}
-            </span>
+            <button
+              type="button"
+              onClick={toggleAmPm}
+              className="w-10 text-xs font-semibold border rounded-md py-1 hover:bg-muted transition-colors"
+            >
+              {isPm ? "PM" : "AM"}
+            </button>
           </div>
 
           <Button size="sm" className="ml-2" onClick={() => setOpen(false)}>

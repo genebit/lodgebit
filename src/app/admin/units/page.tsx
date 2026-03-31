@@ -5,16 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 export const metadata: Metadata = { title: "Units" };
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Plus, Pencil } from "lucide-react";
+import { Table, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Plus } from "lucide-react";
 import type { Unit } from "@/types";
+import UnitTableRows from "@/components/admin/UnitTableRows";
 
 interface UnitRow extends Unit {
   residences: { name: string } | null;
@@ -53,40 +47,7 @@ export default async function UnitsPage() {
               <TableHead className="w-12" />
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {units.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
-                  No units yet.
-                </TableCell>
-              </TableRow>
-            )}
-            {units.map((unit) => (
-              <TableRow key={unit.id}>
-                <TableCell className="font-medium">{unit.name}</TableCell>
-                <TableCell>{unit.residences?.name ?? "—"}</TableCell>
-                <TableCell className="capitalize">{unit.unit_type}</TableCell>
-                <TableCell>{unit.capacity ?? "—"}</TableCell>
-                <TableCell>
-                  {unit.price_per_night != null
-                    ? `₱${Number(unit.price_per_night).toLocaleString()}`
-                    : "—"}
-                </TableCell>
-                <TableCell>
-                  <Badge variant={unit.is_available ? "default" : "secondary"}>
-                    {unit.is_available ? "Available" : "Unavailable"}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <Button asChild size="icon" variant="ghost">
-                    <Link href={`/admin/units/${unit.id}/edit`}>
-                      <Pencil className="h-4 w-4" />
-                    </Link>
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
+          <UnitTableRows units={units} />
         </Table>
       </div>
     </div>

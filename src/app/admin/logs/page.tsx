@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { createClient } from "@/lib/supabase/server";
+import { supabaseAdmin } from "@/lib/supabase/admin";
 import {
   Table,
   TableBody,
@@ -28,8 +28,7 @@ const actionColors: Record<string, string> = {
 };
 
 export default async function LogsPage() {
-  const supabase = await createClient();
-  const { data } = await supabase
+  const { data } = await supabaseAdmin
     .from("booking_logs")
     .select("*, bookings(guest_name), admins(full_name)")
     .order("logged_at", { ascending: false })

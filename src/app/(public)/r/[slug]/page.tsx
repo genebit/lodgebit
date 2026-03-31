@@ -6,10 +6,14 @@ import AvailabilityCalendar from "@/components/public/AvailabilityCalendar";
 import UnitGallery from "@/components/public/UnitGallery";
 import { MapPin, Shield, Sparkles, Clock, Check, MessageCircle } from "lucide-react";
 
-/* ─── Types ──────────────────────────────────────────────────────────── */
-
-interface AmenityRow { id: string; name: string; }
-interface InclusionRow { id: string; description: string; }
+interface AmenityRow {
+  id: string;
+  name: string;
+}
+interface InclusionRow {
+  id: string;
+  description: string;
+}
 interface BookingWithUnit {
   check_in: string;
   check_out: string;
@@ -30,27 +34,24 @@ interface ResidenceFull {
   residence_inclusions: InclusionRow[];
 }
 interface UnitImageRow {
-  id: string; image_url: string; is_cover: boolean;
-  sort_order: number | null; caption: string | null;
+  id: string;
+  image_url: string;
+  is_cover: boolean;
+  sort_order: number | null;
+  caption: string | null;
 }
-interface UnitWithImages { id: string; name: string; unit_images: UnitImageRow[]; }
+interface UnitWithImages {
+  id: string;
+  name: string;
+  unit_images: UnitImageRow[];
+}
 
-/* ─── Metadata ────────────────────────────────────────────────────────── */
-
-export async function generateMetadata(
-  { params }: { params: Promise<{ slug: string }> }
-): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const supabase = await createClient();
-  const { data } = await supabase
-    .from("residences")
-    .select("name")
-    .eq("slug", slug)
-    .maybeSingle();
+  const { data } = await supabase.from("residences").select("name").eq("slug", slug).maybeSingle();
   return { title: data?.name ?? "Residence" };
 }
-
-/* ─── Static data ─────────────────────────────────────────────────────── */
 
 const NAV_LINKS = [
   { label: "Amenities", href: "#amenities" },
@@ -62,16 +63,27 @@ const NAV_LINKS = [
 ];
 
 const HIGHLIGHTS = [
-  { icon: Shield, title: "Safe & Secure", sub: "CCTV Monitored", desc: "24/7 surveillance cameras for your safety and peace of mind." },
-  { icon: Sparkles, title: "Fully Furnished", sub: "Move-in Ready", desc: "Everything you need is already here — just bring your bags." },
-  { icon: Clock, title: "Flexible Stays", sub: "Short or Long-term", desc: "Book for a night, a week, or longer — we accommodate all stays." },
+  {
+    icon: Shield,
+    title: "Safe & Secure",
+    sub: "CCTV Monitored",
+    desc: "24/7 surveillance cameras for your safety and peace of mind.",
+  },
+  {
+    icon: Sparkles,
+    title: "Fully Furnished",
+    sub: "Move-in Ready",
+    desc: "Everything you need is already here — just bring your bags.",
+  },
+  {
+    icon: Clock,
+    title: "Flexible Stays",
+    sub: "Short or Long-term",
+    desc: "Book for a night, a week, or longer — we accommodate all stays.",
+  },
 ];
 
-/* ─── Page ────────────────────────────────────────────────────────────── */
-
-export default async function ResidencePage(
-  { params }: { params: Promise<{ slug: string }> }
-) {
+export default async function ResidencePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const supabase = await createClient();
   const today = new Date().toISOString().split("T")[0];
@@ -79,7 +91,7 @@ export default async function ResidencePage(
   const { data: residenceData } = await supabase
     .from("residences")
     .select(
-      "id, name, slug, description, address, facebook_page_id, latitude, longitude, cover_image_url, residence_amenities(id, name), residence_inclusions(id, description)"
+      "id, name, slug, description, address, facebook_page_id, latitude, longitude, cover_image_url, residence_amenities(id, name), residence_inclusions(id, description)",
     )
     .eq("slug", slug)
     .maybeSingle();
@@ -108,7 +120,7 @@ export default async function ResidencePage(
     unitsWithImages = (unitsData as UnitWithImages[]).map((u) => ({
       ...u,
       unit_images: [...u.unit_images].sort(
-        (a, b) => (b.is_cover ? 1 : 0) - (a.is_cover ? 1 : 0) || (a.sort_order ?? 999) - (b.sort_order ?? 999)
+        (a, b) => (b.is_cover ? 1 : 0) - (a.is_cover ? 1 : 0) || (a.sort_order ?? 999) - (b.sort_order ?? 999),
       ),
     }));
   }
@@ -123,8 +135,6 @@ export default async function ResidencePage(
 
   return (
     <div className="bg-white min-h-screen">
-
-      {/* ── Floating nav ──────────────────────────────────────── */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-5 px-4 pointer-events-none">
         <div className="flex items-center gap-1 bg-black/30 backdrop-blur-md border border-white/20 rounded-full px-2 py-1.5 pointer-events-auto shadow-xl">
           {NAV_LINKS.map(({ label, href }) => (
@@ -138,20 +148,12 @@ export default async function ResidencePage(
           ))}
         </div>
       </nav>
-
-      {/* ── Hero ──────────────────────────────────────────────── */}
       <section
         id="hero"
         className="relative min-h-screen flex flex-col items-center justify-center text-center overflow-hidden"
       >
         <div className="absolute inset-0">
-          <Image
-            src={coverImage}
-            alt={residence.name}
-            fill
-            className="object-cover"
-            priority
-          />
+          <Image src={coverImage} alt={residence.name} fill className="object-cover" priority />
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-[#1e3a5f]/60 via-[#1e3a5f]/70 to-[#1e3a5f]/85" />
         <div className="relative z-10 px-6 max-w-2xl mx-auto space-y-5">
@@ -182,8 +184,6 @@ export default async function ResidencePage(
           </div>
         </div>
       </section>
-
-      {/* ── Highlights ────────────────────────────────────────── */}
       <section className="py-14 px-6 bg-gray-100">
         <div className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-5">
           {HIGHLIGHTS.map(({ icon: Icon, title, sub, desc }) => (
@@ -200,8 +200,6 @@ export default async function ResidencePage(
           ))}
         </div>
       </section>
-
-      {/* ── Amenities ─────────────────────────────────────────── */}
       <section id="amenities" className="py-10 px-6 bg-white">
         <div className="max-w-3xl mx-auto">
           <SectionHeader>Amenities</SectionHeader>
@@ -209,7 +207,10 @@ export default async function ResidencePage(
             {amenities.length > 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {amenities.map((a) => (
-                  <div key={a.id} className="flex items-center gap-3 bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
+                  <div
+                    key={a.id}
+                    className="flex items-center gap-3 bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow"
+                  >
                     <span className="w-7 h-7 rounded-xl bg-[#1e3a5f]/8 flex items-center justify-center flex-shrink-0">
                       <Check className="h-3.5 w-3.5 text-[#1e3a5f]" strokeWidth={2.5} />
                     </span>
@@ -223,8 +224,6 @@ export default async function ResidencePage(
           </div>
         </div>
       </section>
-
-      {/* ── Inclusions ────────────────────────────────────────── */}
       <section id="inclusions" className="py-10 px-6 bg-white">
         <div className="max-w-3xl mx-auto">
           <SectionHeader>What&apos;s Included</SectionHeader>
@@ -246,8 +245,6 @@ export default async function ResidencePage(
           </div>
         </div>
       </section>
-
-      {/* ── Gallery ───────────────────────────────────────────── */}
       <section id="gallery" className="py-10 px-6 bg-white">
         <div className="max-w-3xl mx-auto">
           <SectionHeader>Unit Gallery</SectionHeader>
@@ -256,8 +253,6 @@ export default async function ResidencePage(
           </div>
         </div>
       </section>
-
-      {/* ── Booking Calendar ──────────────────────────────────── */}
       <section id="bookings" className="py-10 px-6 bg-gray-100">
         <div className="max-w-3xl mx-auto">
           <SectionHeader light>Booking Calendar</SectionHeader>
@@ -275,8 +270,6 @@ export default async function ResidencePage(
           </div>
         </div>
       </section>
-
-      {/* ── Location ──────────────────────────────────────────── */}
       <section id="location" className="py-10 px-6 bg-white">
         <div className="max-w-3xl mx-auto">
           <SectionHeader>Location</SectionHeader>
@@ -304,8 +297,6 @@ export default async function ResidencePage(
           )}
         </div>
       </section>
-
-      {/* ── Footer / Contact ──────────────────────────────────── */}
       <footer id="contact" className="bg-[#1e3a5f] text-white py-10 px-6">
         <div className="max-w-3xl mx-auto text-center space-y-10">
           <div className="space-y-3">
@@ -342,7 +333,6 @@ export default async function ResidencePage(
           </div>
         </div>
       </footer>
-
     </div>
   );
 }
