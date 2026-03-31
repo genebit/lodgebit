@@ -16,16 +16,23 @@ export async function POST(req: NextRequest) {
 
     const { data: booking } = await supabaseAdmin
       .from("bookings")
-      .select("id, units(residence_id, residences(facebook_page_id))")
+      .select("id, units(residence_id, residences(facebook_page_id, meta_page_access_token))")
       .eq("id", bookingId)
       .single();
 
-    const pageId = (booking?.units as { residences?: { facebook_page_id?: string } } | null)
-      ?.residences?.facebook_page_id;
+    const residence = (booking?.units as { residences?: { facebook_page_id?: string; meta_page_access_token?: string } } | null)
+      ?.residences;
 
-    if (!pageId) {
+    if (!residence?.facebook_page_id) {
       return NextResponse.json({ error: "No Facebook page linked to this residence" }, { status: 400 });
     }
+
+    const accessToken = residence.meta_page_access_token ?? process.env.META_PAGE_ACCESS_TOKEN;
+    if (!accessToken) {
+      return NextResponse.json({ error: "No Meta Page Access Token configured for this residence" }, { status: 400 });
+    }
+
+    const pageId = residence.facebook_page_id;
 
     const { data: fbPost, error: insertError } = await supabaseAdmin
       .from("fb_posts")
@@ -41,7 +48,7 @@ export async function POST(req: NextRequest) {
 
     if (insertError) throw insertError;
 
-    const result = await postToFacebook(pageId, message);
+    const result = await postToFacebook(pageId, message, accessToken);
 
     await supabaseAdmin
       .from("fb_posts")
