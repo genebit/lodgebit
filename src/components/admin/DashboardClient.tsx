@@ -239,8 +239,8 @@ export default function DashboardClient({ bookings, residenceCount, unitCount }:
         />
       </div>
 
-      <div className="flex gap-3 basis-2/4">
-        <div className="bg-card border rounded-lg p-4 basis-full">
+      <div className="flex gap-3 flex-col sm:flex-row">
+        <div className="bg-card border rounded-lg p-4 flex-1 min-w-0">
           <h3 className="text-sm font-semibold mb-4">Gross Revenue — {PERIOD_LABELS[period]}</h3>
           {chartData.length === 0 || chartData.every((d) => d.revenue === 0) ? (
             <p className="text-sm text-muted-foreground text-center py-10">No revenue data for this period.</p>
@@ -266,34 +266,13 @@ export default function DashboardClient({ bookings, residenceCount, unitCount }:
             </ResponsiveContainer>
           )}
         </div>
-        <div className="bg-card border rounded-lg p-3 flex flex-col gap-1">
+        <div className="bg-card border rounded-lg p-3 flex flex-col gap-1 w-full sm:w-72 shrink-0">
           <p className="text-xs text-muted-foreground font-medium px-1">Bookings This Period</p>
           <Calendar
             mode="single"
             modifiers={{ booked: bookedDates }}
             modifiersClassNames={{
               booked: "!bg-green-500/20 !text-green-700 dark:!text-green-400 font-semibold rounded-md",
-            }}
-            classNames={{
-              root: "w-fill",
-              months: "flex flex-col",
-              month: "space-y-2",
-              caption: "flex justify-center items-center gap-1 text-xs font-medium py-1",
-              caption_label: "text-xs font-medium",
-              nav: "flex items-center gap-1",
-              nav_button: "h-5 w-5 bg-transparent p-0 opacity-50 hover:opacity-100",
-              nav_button_previous: "absolute left-1",
-              nav_button_next: "absolute right-1",
-              table: "w-full border-collapse",
-              head_row: "flex",
-              head_cell: "text-muted-foreground rounded-md w-7 font-normal text-[0.65rem]",
-              row: "flex w-full mt-1",
-              cell: "h-7 w-7 text-center text-xs p-0 relative",
-              day: "h-7 w-7 p-0 font-normal text-xs rounded-md hover:bg-accent hover:text-accent-foreground",
-              day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground",
-              day_today: "bg-accent text-accent-foreground font-semibold",
-              day_outside: "text-muted-foreground/40",
-              day_disabled: "text-muted-foreground opacity-50",
             }}
           />
         </div>
