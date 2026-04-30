@@ -209,12 +209,12 @@ export default function DashboardClient({ bookings, residenceCount, unitCount }:
         <CalendarDayButton
           day={day}
           modifiers={modifiers}
-          className={cn(className, dots.length > 0 && "relative pb-2")}
+          className={cn(className, dots.length > 0 && "relative overflow-visible")}
           {...props}
         >
           {children}
           {dots.length > 0 && (
-            <span className="absolute bottom-0.5 left-0 right-0 flex justify-center gap-0.5 pointer-events-none">
+            <span className="absolute -bottom-1.5 left-0 right-0 flex justify-center gap-0.5 pointer-events-none">
               {dots.map((color, i) => (
                 <span key={i} className={`w-1.5 h-1.5 rounded-full shrink-0 ${color}`} />
               ))}
