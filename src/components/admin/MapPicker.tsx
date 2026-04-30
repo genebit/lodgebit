@@ -16,6 +16,8 @@ export default function MapPicker({ lat, lng, onChange }: MapPickerProps) {
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if ((containerRef.current as any)._leaflet_id) return;
 
     // Dynamically import Leaflet (no SSR)
     import("leaflet").then((L) => {

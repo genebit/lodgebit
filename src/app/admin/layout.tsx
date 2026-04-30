@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminTopbar from "@/components/admin/AdminTopbar";
+import NavigationLoader from "@/components/NavigationLoader";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -13,6 +14,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <div className="flex h-screen overflow-hidden">
+      <NavigationLoader />
       <AdminSidebar user={user} />
       <div className="flex flex-col flex-1 overflow-hidden">
         <AdminTopbar user={user} />
