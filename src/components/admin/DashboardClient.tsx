@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, type ComponentProps } from "react";
 import Link from "next/link";
 import {
   startOfWeek,
@@ -17,7 +17,8 @@ import {
 } from "date-fns";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { Calendar, CalendarDayButton } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
 import { Download, TrendingUp, Users, Building2 } from "lucide-react";
 import type { DashboardBooking } from "@/app/admin/dashboard/page";
 
@@ -54,6 +55,17 @@ function filterByPeriod(bookings: DashboardBooking[], period: Period): Dashboard
 function formatCurrency(val: number) {
   return `₱${val.toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
+
+const UNIT_DOT_COLORS = [
+  "bg-blue-500",
+  "bg-orange-500",
+  "bg-violet-500",
+  "bg-pink-500",
+  "bg-teal-500",
+  "bg-rose-400",
+  "bg-amber-500",
+  "bg-cyan-500",
+];
 
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
@@ -154,6 +166,66 @@ export default function DashboardClient({ bookings, residenceCount, unitCount }:
     [filtered],
   );
 
+  const unitColorMap = useMemo(() => {
+    const units = [...new Set(bookings.map((b) => b.unit_name).filter(Boolean) as string[])].sort();
+    return new Map(units.map((u, i) => [u, UNIT_DOT_COLORS[i % UNIT_DOT_COLORS.length]]));
+  }, [bookings]);
+
+  const dateDotMap = useMemo(() => {
+    const map = new Map<string, string[]>();
+    filtered
+      .filter((b) => b.status !== "cancelled" && b.unit_name)
+      .forEach((b) => {
+        try {
+          const days = eachDayOfInterval({ start: parseISO(b.check_in), end: parseISO(b.check_out) });
+          const color = unitColorMap.get(b.unit_name!) ?? "bg-gray-400";
+          days.forEach((day) => {
+            const key = format(day, "yyyy-MM-dd");
+            if (!map.has(key)) map.set(key, []);
+            const existing = map.get(key)!;
+            if (!existing.includes(color)) existing.push(color);
+          });
+        } catch {}
+      });
+    return map;
+  }, [filtered, unitColorMap]);
+
+  const legendUnits = useMemo(() => {
+    const names = [...new Set(bookings.filter((b) => b.unit_name).map((b) => b.unit_name as string))].sort();
+    return names.map((name) => ({ name, color: unitColorMap.get(name) ?? "bg-gray-400" }));
+  }, [bookings, unitColorMap]);
+
+  const customDayButton = useMemo(() => {
+    function DayButtonWithDots({
+      day,
+      modifiers,
+      className,
+      children,
+      ...props
+    }: ComponentProps<typeof CalendarDayButton>) {
+      const key = format(day.date, "yyyy-MM-dd");
+      const dots = dateDotMap.get(key) ?? [];
+      return (
+        <CalendarDayButton
+          day={day}
+          modifiers={modifiers}
+          className={cn(className, dots.length > 0 && "relative pb-2")}
+          {...props}
+        >
+          {children}
+          {dots.length > 0 && (
+            <span className="absolute bottom-0.5 left-0 right-0 flex justify-center gap-0.5 pointer-events-none">
+              {dots.map((color, i) => (
+                <span key={i} className={`w-1.5 h-1.5 rounded-full shrink-0 ${color}`} />
+              ))}
+            </span>
+          )}
+        </CalendarDayButton>
+      );
+    }
+    return DayButtonWithDots;
+  }, [dateDotMap]);
+
   async function handleExport() {
     const { utils, writeFile } = await import("xlsx");
     const rows = filtered.map((b) => ({
@@ -239,8 +311,8 @@ export default function DashboardClient({ bookings, residenceCount, unitCount }:
         />
       </div>
 
-      <div className="flex gap-3 basis-2/4">
-        <div className="bg-card border rounded-lg p-4 basis-full">
+      <div className="flex gap-3 flex-col sm:flex-row">
+        <div className="bg-card border rounded-lg p-4 flex-1 min-w-0">
           <h3 className="text-sm font-semibold mb-4">Gross Revenue — {PERIOD_LABELS[period]}</h3>
           {chartData.length === 0 || chartData.every((d) => d.revenue === 0) ? (
             <p className="text-sm text-muted-foreground text-center py-10">No revenue data for this period.</p>
@@ -266,7 +338,7 @@ export default function DashboardClient({ bookings, residenceCount, unitCount }:
             </ResponsiveContainer>
           )}
         </div>
-        <div className="bg-card border rounded-lg p-3 flex flex-col gap-1">
+        <div className="bg-card border rounded-lg p-3 flex flex-col gap-1 w-full sm:w-72 shrink-0">
           <p className="text-xs text-muted-foreground font-medium px-1">Bookings This Period</p>
           <Calendar
             mode="single"
@@ -274,28 +346,18 @@ export default function DashboardClient({ bookings, residenceCount, unitCount }:
             modifiersClassNames={{
               booked: "!bg-green-500/20 !text-green-700 dark:!text-green-400 font-semibold rounded-md",
             }}
-            classNames={{
-              root: "w-fill",
-              months: "flex flex-col",
-              month: "space-y-2",
-              caption: "flex justify-center items-center gap-1 text-xs font-medium py-1",
-              caption_label: "text-xs font-medium",
-              nav: "flex items-center gap-1",
-              nav_button: "h-5 w-5 bg-transparent p-0 opacity-50 hover:opacity-100",
-              nav_button_previous: "absolute left-1",
-              nav_button_next: "absolute right-1",
-              table: "w-full border-collapse",
-              head_row: "flex",
-              head_cell: "text-muted-foreground rounded-md w-7 font-normal text-[0.65rem]",
-              row: "flex w-full mt-1",
-              cell: "h-7 w-7 text-center text-xs p-0 relative",
-              day: "h-7 w-7 p-0 font-normal text-xs rounded-md hover:bg-accent hover:text-accent-foreground",
-              day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground",
-              day_today: "bg-accent text-accent-foreground font-semibold",
-              day_outside: "text-muted-foreground/40",
-              day_disabled: "text-muted-foreground opacity-50",
-            }}
+            components={{ DayButton: customDayButton }}
           />
+          {legendUnits.length > 0 && (
+            <div className="px-1 pt-1 border-t mt-1 flex flex-wrap gap-x-3 gap-y-1.5">
+              {legendUnits.map(({ name, color }) => (
+                <div key={name} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <span className={`w-2 h-2 rounded-full shrink-0 ${color}`} />
+                  <span className="truncate max-w-[100px]">{name}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

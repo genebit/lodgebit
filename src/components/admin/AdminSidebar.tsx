@@ -4,18 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/lib/theme";
-import {
-  LayoutDashboard,
-  Calendar,
-  ClipboardList,
-  ScanText,
-  DoorOpen,
-  Building2,
-  Share2,
-  Activity,
-  Moon,
-  Sun,
-} from "lucide-react";
+import { LayoutDashboard, Calendar, ClipboardList, ScanText, DoorOpen, Building2, Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
@@ -30,8 +19,6 @@ const mainNav = [
 const manageNav = [
   { label: "Units", href: "/admin/units", icon: DoorOpen },
   { label: "Residences", href: "/admin/residences", icon: Building2 },
-  { label: "Facebook", href: "/admin/facebook", icon: Share2 },
-  { label: "Logs", href: "/admin/logs", icon: Activity },
 ];
 
 const allNavItems = [...mainNav, ...manageNav];
