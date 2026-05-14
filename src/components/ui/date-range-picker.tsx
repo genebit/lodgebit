@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { format, isValid, parseISO } from "date-fns";
 import { CalendarIcon, Clock, ArrowRight } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
@@ -42,19 +42,59 @@ function TimeInput({ label, iso, onChange }: TimeInputProps) {
   const validDate = parsed && isValid(parsed) ? parsed : null;
   const { hours24, minutes, isPm, hours12 } = parseTime(iso);
 
-  function handleHour(h: number) {
-    const clamped = Math.min(12, Math.max(1, h));
-    const next24 = isPm ? (clamped === 12 ? 12 : clamped + 12) : clamped === 12 ? 0 : clamped;
-    const base = validDate ? new Date(validDate) : new Date();
-    base.setHours(next24);
-    base.setMinutes(minutes);
-    onChange(toIso(base));
+  const [hourValue, setHourValue] = useState(String(hours12).padStart(2, "0"));
+  const [minuteValue, setMinuteValue] = useState(String(minutes).padStart(2, "0"));
+  const [prevHours12, setPrevHours12] = useState(hours12);
+  const [prevMinutes, setPrevMinutes] = useState(minutes);
+
+  if (hours12 !== prevHours12) {
+    setHourValue(String(hours12).padStart(2, "0"));
+    setPrevHours12(hours12);
+  }
+  if (minutes !== prevMinutes) {
+    setMinuteValue(String(minutes).padStart(2, "0"));
+    setPrevMinutes(minutes);
   }
 
-  function handleMinute(m: number) {
+  function handleHourChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const val = e.target.value;
+    setHourValue(val);
+
+    const h = parseInt(val, 10);
+    if (!isNaN(h) && h >= 1 && h <= 12) {
+      updateTime(h, minutes);
+    }
+  }
+
+  function handleMinuteChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const val = e.target.value;
+    setMinuteValue(val);
+
+    const m = parseInt(val, 10);
+    if (!isNaN(m) && m >= 0 && m <= 59) {
+      updateTime(hours12, m);
+    }
+  }
+
+  function handleHourBlur() {
+    const h = parseInt(hourValue, 10);
+    const clamped = isNaN(h) ? 12 : Math.min(12, Math.max(1, h));
+    setHourValue(String(clamped).padStart(2, "0"));
+    updateTime(clamped, minutes);
+  }
+
+  function handleMinuteBlur() {
+    const m = parseInt(minuteValue, 10);
+    const clamped = isNaN(m) ? 0 : Math.min(59, Math.max(0, m));
+    setMinuteValue(String(clamped).padStart(2, "0"));
+    updateTime(hours12, clamped);
+  }
+
+  function updateTime(h12: number, m: number) {
+    const next24 = isPm ? (h12 === 12 ? 12 : h12 + 12) : h12 === 12 ? 0 : h12;
     const base = validDate ? new Date(validDate) : new Date();
-    base.setHours(hours24);
-    base.setMinutes(Math.min(59, Math.max(0, m)));
+    base.setHours(next24);
+    base.setMinutes(m);
     onChange(toIso(base));
   }
 
@@ -75,8 +115,9 @@ function TimeInput({ label, iso, onChange }: TimeInputProps) {
           type="number"
           min={1}
           max={12}
-          value={String(hours12).padStart(2, "0")}
-          onChange={(e) => handleHour(Number(e.target.value))}
+          value={hourValue}
+          onChange={handleHourChange}
+          onBlur={handleHourBlur}
           className="w-16 border rounded-md px-2 py-2.5 text-base text-center tabular-nums bg-background focus:outline-none focus:ring-2 focus:ring-ring"
         />
         <span className="text-muted-foreground font-bold text-lg">:</span>
@@ -85,8 +126,9 @@ function TimeInput({ label, iso, onChange }: TimeInputProps) {
           min={0}
           max={59}
           step={5}
-          value={String(minutes).padStart(2, "0")}
-          onChange={(e) => handleMinute(Number(e.target.value))}
+          value={minuteValue}
+          onChange={handleMinuteChange}
+          onBlur={handleMinuteBlur}
           className="w-16 border rounded-md px-2 py-2.5 text-base text-center tabular-nums bg-background focus:outline-none focus:ring-2 focus:ring-ring"
         />
         <button
@@ -109,15 +151,15 @@ export function DateRangePicker({
   disabled,
 }: DateRangePickerProps) {
   const [open, setOpen] = useState(false);
-  const [isSmall, setIsSmall] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 639px)");
-    setIsSmall(mq.matches);
-    const handler = (e: MediaQueryListEvent) => setIsSmall(e.matches);
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
+  const isSmall = useSyncExternalStore(
+    (callback) => {
+      const mq = window.matchMedia("(max-width: 639px)");
+      mq.addEventListener("change", callback);
+      return () => mq.removeEventListener("change", callback);
+    },
+    () => window.matchMedia("(max-width: 639px)").matches,
+    () => false,
+  );
 
   const checkInDate = checkIn ? parseISO(checkIn) : undefined;
   const checkOutDate = checkOut ? parseISO(checkOut) : undefined;
@@ -160,11 +202,12 @@ export function DateRangePicker({
     }
   }
 
-  const label = validIn && validOut
-    ? `${format(checkInDate!, "MMM d")} → ${format(checkOutDate!, "MMM d, yyyy")}`
-    : validIn
-    ? `${format(checkInDate!, "MMM d, yyyy")} → Pick check-out`
-    : "Pick check-in & check-out";
+  const label =
+    validIn && validOut
+      ? `${format(checkInDate!, "MMM d")} → ${format(checkOutDate!, "MMM d, yyyy")}`
+      : validIn
+        ? `${format(checkInDate!, "MMM d, yyyy")} → Pick check-out`
+        : "Pick check-in & check-out";
 
   return (
     <>
@@ -210,7 +253,9 @@ export function DateRangePicker({
               <TimeInput label="Check-out time" iso={checkOut} onChange={onChangeCheckOut} />
             </div>
             <div className="flex justify-end">
-              <Button size="sm" onClick={() => setOpen(false)}>Done</Button>
+              <Button size="sm" onClick={() => setOpen(false)}>
+                Done
+              </Button>
             </div>
           </div>
         </DialogContent>
